@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الوثيقة التاريخية العليا: Nation on Fire</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        :root {
+            --primary-blue: #009edb;
+            --deep-navy: #0f172a;
+            --text-light: #f0f8ff;
+            --text-muted: #a0c8e8;
+            --border-color: rgba(0, 158, 219, 0.3);
+            --container-bg-color: rgba(15, 23, 42, 0.75);
+            --shadow-color: rgba(0, 0, 0, 0.6);
+            --gold-accent: #ffd700;
+            font-size: 16px;
+        }
+        @keyframes scroll-indicator-anim {
+            0%, 100% { transform: translateY(0); opacity: 0.9; }
+            50% { transform: translateY(10px); opacity: 0.5; }
+        }
+        @keyframes stamp-animation {
+            0% { transform: scale(3.5) rotate(-25deg); opacity: 0; }
+            40% { transform: scale(0.9) rotate(5deg); opacity: 1; }
+            60% { transform: scale(1.1) rotate(-3deg); }
+            80% { transform: scale(1.0); opacity: 1; }
+            100% { transform: scale(1.0); opacity: 0; }
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--deep-navy);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            opacity: 0;
+            transition: opacity 1.5s ease-in;
+        }
+        body.fade-out {
+            opacity: 0 !important;
+        }
+        .skip-intro {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: var(--container-bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+        .skip-intro:hover {
+            background: var(--primary-blue);
+            color: var(--text-light);
+            border-color: var(--primary-blue);
+        }
+        .story-container {
+            width: 100%;
+        }
+        .chapter {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            padding: 5vh 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            box-sizing: border-box;
+        }
+        .chapter::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(15, 23, 42, 0.2) 0%, rgba(15, 23, 42, 0.8) 100%);
+            z-index: 1;
+        }
+        .chapter-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            width: 95%;
+            padding: 2rem 1.5rem;
+            background-color: var(--container-bg-color);
+            border: 1px solid rgba(0, 158, 219, 0.2);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px var(--shadow-color);
+            text-align: right;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+        }
+        .chapter-content.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        h2 {
+            font-family: 'Amiri', serif;
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            color: var(--text-light);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin: 0 0 25px 0;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(0, 158, 219, 0.4);
+        }
+        p, li {
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            line-height: 1.9;
+            margin-bottom: 1.2em;
+            color: var(--text-muted);
+            text-shadow: 1px 1px 4px var(--shadow-color);
+        }
+        ul {
+            list-style-type: none;
+            padding-right: 20px;
+            margin-bottom: 25px;
+            border-right: 2px solid var(--primary-blue);
+        }
+        ul li {
+            position: relative;
+        }
+        ul li::before {
+            content: "«";
+            color: var(--primary-blue);
+            font-weight: bold;
+            position: absolute;
+            right: -25px;
+        }
+        .ref-code, .data-placeholder {
+            font-family: 'Courier New', monospace;
+            color: var(--gold-accent);
+            background-color: rgba(30, 41, 59, 0.5);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            direction: ltr;
+            display: inline-block;
+            border: 1px solid var(--border-color);
+        }
+        .data-placeholder {
+            color: var(--text-light);
+            font-weight: 700;
+        }
+        blockquote {
+            border-right: 3px solid var(--primary-blue);
+            padding-right: 20px;
+            margin: 30px 10px 30px 0;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+        blockquote footer {
+            font-size: 0.9em;
+            color: var(--text-muted);
+            margin-top: 10px;
+            font-style: normal;
+        }
+        .navigation-area {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .next-button {
+            background-color: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--text-muted);
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 12px 35px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            backdrop-filter: blur(5px);
+            display: inline-block;
+            clip-path: polygon(95% 0, 100% 50%, 95% 100%, 5% 100%, 0 50%, 5% 0);
+        }
+        .next-button:hover {
+            background-color: var(--primary-blue);
+            color: var(--text-light);
+            transform: scale(1.05);
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 25px rgba(0, 158, 219, 0.4);
+        }
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            color: white;
+            animation: scroll-indicator-anim 2s infinite ease-in-out;
+        }
+        #seal-button {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        #seal-button:hover .seal-title {
+            background-color: var(--gold-accent);
+            color: #050505;
+            transform: scale(1.05);
+            border-color: var(--gold-accent);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+        }
+        #seal-button p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin: 5px 0;
+        }
+        #seal-button .seal-title {
+            display: inline-block;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--gold-accent);
+            border: 2px solid var(--gold-accent);
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease-in-out;
+        }
+        #stamp-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.9);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        #stamp-overlay img {
+            width: 280px;
+            max-width: 70%;
+            opacity: 0;
+        }
+        #stamp-overlay img.stamped {
+            animation: stamp-animation 2s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <button id="skip-intro-btn" class="skip-intro">تخطي المقدمة</button>
+    <div class="story-container">
+        <section id="chapter-1" class="chapter">
+            <div class="chapter-content">
+                <h2>الفصل الأول: موت الحضارة</h2>
+                <p>في 17 أكتوبر 2025، تم تفعيل تقنية مصنفة من نوع "المحرّم الأعلى". لم تكن حربًا، بل محوًا كاملاً للحضارة.</p>
+                <blockquote>انهارت شبكات الطاقة، احترقت الأقمار، ومات 1.7 مليار إنسان.</blockquote>
+                <p>صدر مرسوم <span class="ref-code">GAGHR/UE000-ZERO-X</span> بحظر ذكر المسؤولين، لتُطمس هويتهم من التاريخ.</p>
+                <div class="navigation-area">
+                    <button class="next-button" data-target="#chapter-2">التالي <i class="fas fa-angle-double-left"></i></button>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <i class="fas fa-chevron-down fa-2x"></i>
+            </div>
+        </section>
+        <section id="chapter-2" class="chapter">
+            <div class="chapter-content">
+                <h2>الفصل الثاني: قانون الخلاص الدموي</h2>
+                <p>من رحم الخراب، تأسست الهيئة العالمية لإعادة ضبط النظام (GAGHR) في 2028، وصدّقت على "قوانين التوبة العالمية".</p>
+                <ul>
+                    <li>تجريم التقنيات المسببة للانهيار.</li>
+                    <li>تجريم تمجيد ما قبل الكارثة.</li>
+                    <li>محو السجلات البنكية وإلغاء الديون.</li>
+                </ul>
+                <div class="navigation-area">
+                    <button class="next-button" data-target="#chapter-3">التالي <i class="fas fa-angle-double-left"></i></button>
+                </div>
+            </div>
+        </section>
+        <section id="chapter-3" class="chapter">
+            <div class="chapter-content">
+                <h2>الفصل الثالث: "الصحوة"</h2>
+                <p>في 2035، أُعلن عن مشروع الصحوة، المحاولة الأخيرة لإنقاذ البشرية عبر السماح بتأسيس دول جديدة بميزانية موحدة.</p>
+                <blockquote>وبدأ السباق… لميلاد عالم جديد فوق جثث مليارين ونصف إنسان.</blockquote>
+                <div class="navigation-area">
+                    <button class="next-button" data-target="#chapter-4">التالي <i class="fas fa-angle-double-left"></i></button>
+                </div>
+            </div>
+        </section>
+        <section id="chapter-4" class="chapter">
+            <div class="chapter-content">
+                <h2>الفصل الرابع: الولادة من الرماد</h2>
+                <p>في 2036، تلقّت GAGHR طلبًا من <span id="user-name" class="data-placeholder"></span>، قائد أمة <span id="country-name" class="data-placeholder"></span>.</p>
+                <p>تمت المصادقة بالإجماع وأُصدر المرسوم <span class="ref-code">GAGHR-XZ011-REACT</span>، الذي يعترف بأمتكم ويرفع سيادتها فورًا.</p>
+                <blockquote>وهكذا عادت أمتكم إلى الوجود... من تحت رماد الخرائط المنسية.</blockquote>
+                <div class="navigation-area">
+                    <button class="next-button" data-target="#chapter-5">التالي <i class="fas fa-angle-double-left"></i></button>
+                </div>
+            </div>
+        </section>
+        <section id="chapter-5" class="chapter">
+            <div class="chapter-content">
+                <h2>الفصل الخامس: طريق العظام</h2>
+                <p>لم تكن إعادة التأسيس سهلة، بل حربًا صامتة ضد الفوضى ونقص الموارد.</p>
+                <p>لكن خلال عقد، أنجزت أمة <span id="country-name-2" class="data-placeholder"></span> إعادة إسكان 3.2 مليون إنسان، وتحقيق الأمن الغذائي بنسبة 96%.</p>
+                <blockquote>"أمتكم أصبحت ضمن النموذج السيادي الكامل، ومرجعية للأمم الناشئة."<footer>إعلان GAGHR، 2046</footer>
+                </blockquote>
+                <div class="navigation-area">
+                    <button class="next-button" data-target="#chapter-6">التالي <i class="fas fa-angle-double-left"></i></button>
+                </div>
+            </div>
+        </section>
+        <section id="chapter-6" class="chapter">
+            <div class="chapter-content">
+                <h2>الفصل السادس: أمة مشتعلة</h2>
+                <p>اليوم، في 2056، تقف أمة <span id="country-name-3" class="data-placeholder"></span> شامخة. مصنفة من GAGHR كـ <span class="ref-code">CLASS-1A</span>.</p>
+                <div id="seal-button">
+                    <p>فخامة القائد <span id="user-name-2" class="data-placeholder"></span>، هذا السجل يُحفظ كدليل على أن أمتكم لم تختر أن تعود، بل قررت أن تُولد رغم أن العالم كله مات.</p>
+                    <div class="seal-title">اضغط هنا لختم الوثيقة</div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="stamp-overlay">
+        <img src="p/logo.png" alt="Seal Stamped">
+    </div>
+    <audio id="background-music" loop><source src="https://cdn.pixabay.com/download/audio/2022/08/04/audio_2bbe649ce1.mp3" type="audio/mpeg"></audio>
+    <audio id="stamp-sound"><source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_e4b1f6424a.mp3" type="audio/mpeg"></audio>
+    <audio id="click-sound"><source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_23b694b29a.mp3" type="audio/mpeg"></audio>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const firebaseConfig = {
+                apiKey: "AIzaSyDtj_AsssLYm7ZZpgFeUTqYNCrAUevOprs",
+                authDomain: "the-chess-game-54a2c.firebaseapp.com",
+                databaseURL: "https://the-chess-game-54a2c-default-rtdb.firebaseio.com",
+                projectId: "the-chess-game-54a2c",
+                storageBucket: "the-chess-game-54a2c.firebasestorage.app",
+                messagingSenderId: "1012470944135",
+                appId: "1:1012470944135:web:353bd44c8f5f7d8dcdc322",
+                measurementId: "G-CFL72H1T3B"
+            };
+            try {
+                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+            } catch (e) {
+                console.error("Firebase initialization failed:", e);
+                return;
+            }
+            const auth = firebase.auth();
+            const firestore = firebase.firestore();
+            const sealButton = document.getElementById('seal-button');
+            const backgroundMusic = document.getElementById('background-music');
+            const stampSound = document.getElementById('stamp-sound');
+            const clickSound = document.getElementById('click-sound');
+            const stampOverlay = document.getElementById('stamp-overlay');
+            const stampImage = stampOverlay.querySelector('img');
+            const nextButtons = document.querySelectorAll('.next-button');
+            const skipButton = document.getElementById('skip-intro-btn');
+            backgroundMusic.volume = 0.3;
+            clickSound.volume = 0.5;
+            let musicStarted = false;
+            const redirectToHome = () => {
+                document.body.classList.add('fade-out');
+                setTimeout(() => window.location.replace('home.html'), 500);
+            };
+            skipButton.addEventListener('click', () => {
+                clickSound.play();
+                redirectToHome();
+            });
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    const userDocRef = firestore.collection('users').doc(user.uid);
+                    try {
+                        const doc = await userDocRef.get();
+                        if (doc.exists) {
+                            const userData = doc.data();
+                            const username = userData.headName || 'فخامتكم';
+                            const country = userData.country || 'الأمة الجديدة';
+                            populateUserData(username, country);
+                            initializeStory(userDocRef);
+                        } else {
+                            populateUserData('فخامتكم', 'الأمة الجديدة');
+                            initializeStory(userDocRef);
+                        }
+                    } catch (error) {
+                        console.error("Error fetching user data:", error);
+                        populateUserData('فخامتكم', 'الأمة الجديدة');
+                        initializeStory(userDocRef);
+                    }
+                } else {
+                    window.location.replace('index.html');
+                }
+            });
+
+            function populateUserData(username, country) {
+                document.querySelectorAll('#user-name, #user-name-2').forEach(el => el.textContent = username);
+                document.querySelectorAll('#country-name, #country-name-2, #country-name-3').forEach(el => el.textContent = country);
+            }
+
+            function initializeStory(userDocRef) {
+                document.body.style.opacity = '1';
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                        }
+                    });
+                }, {
+                    root: null,
+                    rootMargin: '0px',
+                    threshold: 0.4
+                });
+                document.querySelectorAll('.chapter-content').forEach(el => observer.observe(el));
+                const startMusic = () => {
+                    if (!musicStarted) {
+                        backgroundMusic.play().catch(e => console.log("Music play blocked until user interaction."));
+                        musicStarted = true;
+                    }
+                };
+                nextButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        startMusic();
+                        clickSound.play();
+                        const targetSelector = button.dataset.target;
+                        const targetElement = document.querySelector(targetSelector);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    });
+                });
+                sealButton.addEventListener('click', async () => {
+                    startMusic();
+                    stampSound.play();
+                    try {
+                        await userDocRef.set({
+                            hasSeenIntro: true
+                        }, {
+                            merge: true
+                        });
+                    } catch (error) {
+                        console.error("Failed to update 'hasSeenIntro' status:", error);
+                    }
+                    stampOverlay.style.display = 'flex';
+                    stampImage.classList.add('stamped');
+                    setTimeout(() => {
+                        document.body.classList.add('fade-out');
+                    }, 2000);
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 2500);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

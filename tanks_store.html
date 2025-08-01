@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>وزارة الدفاع - القوات البرية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap');
+        :root {
+            --background: #0D1117;
+            --surface: #161B22;
+            --surface-gradient: linear-gradient(145deg, #1A2029, #12171E);
+            --primary: #58A6FF;
+            --primary-light: rgba(88, 166, 255, 0.1);
+            --border: #30363D;
+            --text-primary: #C9D1D9;
+            --text-secondary: #8B949E;
+            --success: #3FB950;
+            --danger: #F85149;
+            --warning: #D29922;
+        }
+        * {
+            font-family: 'Almarai', sans-serif;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            display: flex;
+        }
+        #sidebar {
+            width: 260px;
+            background: var(--surface);
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 1rem;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+        }
+        #main-content {
+            margin-right: 260px;
+            width: calc(100% - 260px);
+            padding: 2rem;
+            overflow-y: auto;
+            height: 100vh;
+        }
+        .profile-section {
+            text-align: center;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+        .profile-section h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .user-id-wrapper {
+            background-color: var(--background);
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            border: 1px solid var(--border);
+            text-align: center;
+            word-break: break-all;
+        }
+        .nav-menu a, .nav-menu button {
+            display: flex; align-items: center;
+            padding: 0.75rem; border-radius: 0.375rem;
+            text-decoration: none; color: var(--text-secondary);
+            font-weight: 700; transition: all 0.2s ease-in-out;
+            margin-bottom: 0.5rem; width: 100%; text-align: right;
+        }
+        .nav-menu a:hover, .nav-menu button:hover {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+        .nav-menu i {
+            margin-left: 0.75rem; width: 20px; text-align: center;
+        }
+        .nav-menu .logout-btn {
+            margin-top: auto; color: var(--danger);
+        }
+        .nav-menu .logout-btn:hover {
+            background-color: rgba(248, 81, 73, 0.1);
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+        .header-stats {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .stat-display {
+            background-color: var(--surface);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .asset-card {
+            background: var(--surface-gradient);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            display: flex; flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+        .asset-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        .asset-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .asset-content {
+            text-align: center;
+            flex-grow: 1;
+        }
+        .asset-content h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .asset-content .details {
+            margin: 1rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .asset-content .details p { margin-bottom: 0.5rem; }
+        .asset-content .details span {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+        .buy-btn {
+            background-color: var(--success);
+            color: white; border: none; padding: 0.75rem;
+            border-radius: 0.5rem; font-weight: 700; cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .buy-btn:hover { background-color: #2F853A; }
+        .buy-btn:disabled {
+            background-color: var(--danger);
+            cursor: not-allowed;
+        }
+        .notification {
+            position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 2000;
+            background-color: #1E293B; border-radius: 0.5rem;
+            padding: 1rem 1.5rem; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(calc(100% + 2rem)); transition: transform 0.4s ease-in-out;
+            color: white; min-width: 350px; display: flex; align-items: center; gap: 1rem;
+            border-top: 3px solid var(--primary);
+        }
+        .notification.show { transform: translateY(0); }
+        .notification i { font-size: 1.25rem; }
+        .grid { display: grid; gap: 1.5rem; }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        @media (max-width: 1200px) { .grid-3 { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 992px) {
+            #sidebar { display: none; }
+            #main-content { margin-right: 0; width: 100%; }
+        }
+        @media (max-width: 768px) {
+            .grid-3 { grid-template-columns: 1fr; }
+            .page-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+            .header-stats { width: 100%; flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <aside id="sidebar">
+        <div class="profile-section">
+            <h2 id="profileHeadName">جار التحميل...</h2>
+            <p id="profileCountryName">جار التحميل...</p>
+            <div class="user-id-wrapper"><span id="profileUserId">...</span></div>
+        </div>
+        <nav class="nav-menu flex flex-col flex-grow">
+            <a href="home.html"><i class="fas fa-home"></i> <span>الرئيسية</span></a>
+            <a href="economic_store.html"><i class="fas fa-landmark"></i> <span>الاستثمارات الوطنية</span></a>
+            <a href="tanks_store.html" style="background-color: var(--primary-light); color: var(--primary);"><i class="fa-solid fa-shield-halved"></i> <span>القوات البرية</span></a>
+            <a href="aircraft_store.html"><i class="fas fa-paper-plane"></i> <span>القوات الجوية</span></a>
+            <a href="world.html"><i class="fas fa-crosshairs"></i> <span>الأسلحة الاستراتيجية</span></a>
+            <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>تسجيل الخروج</span></button>
+        </nav>
+    </aside>
+
+    <div id="main-content">
+        <header class="page-header">
+            <h1><i class="fa-solid fa-shield-halved text-primary"></i> القوات البرية</h1>
+            <div class="header-stats">
+                <div class="stat-display">
+                    <i class="fas fa-wallet" style="color:var(--warning)"></i>
+                    <span id="userBalance">...</span>
+                </div>
+                <div class="stat-display">
+                    <i class="fas fa-fire" style="color:var(--danger)"></i>
+                    <span id="militaryPower">...</span>
+                </div>
+            </div>
+        </header>
+
+        <section id="tanksList" class="grid grid-3">
+            <p class="text-text-secondary col-span-full">جارٍ تحميل الأصول العسكرية...</p>
+        </section>
+    </div>
+
+    <div id="notification" class="notification">
+        <i id="notificationIcon"></i>
+        <p id="notificationMessage"></p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <script>
+        function showNotification(message, type = 'info') {
+            const el = {
+                notification: document.getElementById('notification'),
+                msg: document.getElementById('notificationMessage'),
+                icon: document.getElementById('notificationIcon')
+            };
+            if (!el.notification || !el.msg || !el.icon) return;
+            const styles = {
+                success: { icon: 'fas fa-check-circle', color: 'var(--success)' },
+                error: { icon: 'fas fa-times-circle', color: 'var(--danger)' },
+                info: { icon: 'fas fa-info-circle', color: 'var(--primary)' }
+            };
+            const style = styles[type] || styles.info;
+            el.notification.style.borderTopColor = style.color;
+            el.icon.className = style.icon;
+            el.icon.style.color = style.color;
+            el.msg.textContent = message;
+            el.notification.classList.add('show');
+            setTimeout(() => el.notification.classList.remove('show'), 4000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const firebaseConfig = {
+                apiKey: "AIzaSyDtj_AsssLYm7ZZpgFeUTqYNCrAUevOprs",
+                authDomain: "the-chess-game-54a2c.firebaseapp.com",
+                databaseURL: "https://the-chess-game-54a2c-default-rtdb.firebaseio.com",
+                projectId: "the-chess-game-54a2c",
+                storageBucket: "the-chess-game-54a2c.firebasestorage.app",
+                messagingSenderId: "1012470944135",
+                appId: "1:1012470944135:web:353bd44c8f5f7d8dcdc322"
+            };
+
+            try {
+                firebase.initializeApp(firebaseConfig);
+            } catch (e) {
+                document.body.innerHTML = `<div style="color: red; text-align: center; margin-top: 50px;">خطأ فادح في تهيئة التطبيق.</div>`;
+                return;
+            }
+
+            const auth = firebase.auth();
+            const firestore = firebase.firestore();
+            const database = firebase.database();
+
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                auth.signOut().then(() => { window.location.href = 'index.html'; });
+            });
+            
+            const ASSET_DEFINITIONS = {
+                'T-72': { cost: 12000000, value: 8000, type: 'عسكري', icon: 'fa-truck-monster' },
+                'Leclerc': { cost: 18000000, value: 14000, type: 'عسكري', icon: 'fa-truck-monster' },
+                'T-90': { cost: 20000000, value: 15000, type: 'عسكري', icon: 'fa-truck-monster' },
+                'Merkava_IV': { cost: 21000000, value: 15500, type: 'عسكري', icon: 'fa-truck-monster' },
+                'Challenger_2': { cost: 24000000, value: 18000, type: 'عسكري', icon: 'fa-truck-monster' },
+                'M1A2_Abrams': { cost: 28000000, value: 22000, type: 'عسكري', icon: 'fa-truck-monster' },
+                'Leopard_2A7': { cost: 30000000, value: 25000, type: 'عسكري', icon: 'fa-truck-monster' },
+                'K2_Black_Panther': { cost: 40000000, value: 35000, type: 'عسكري', icon: 'fa-truck-monster' },
+                'T-14_Armata': { cost: 50000000, value: 45000, type: 'عسكري', icon: 'fa-truck-monster' },
+            };
+            
+            let currentUserData = {};
+
+            const formatNumber = (num) => num.toLocaleString('en-US');
+
+            function updateUI(data) {
+                const { balance = 0, militaryPower = 0 } = data;
+                document.getElementById('userBalance').textContent = `${formatNumber(balance)} $`;
+                document.getElementById('militaryPower').textContent = formatNumber(militaryPower);
+                document.querySelectorAll('.buy-btn').forEach(button => {
+                    const asset = ASSET_DEFINITIONS[button.dataset.assetId];
+                    button.disabled = asset ? balance < asset.cost : true;
+                });
+            }
+
+            function renderTanks() {
+                const container = document.getElementById('tanksList');
+                container.innerHTML = '';
+                for (const [assetId, details] of Object.entries(ASSET_DEFINITIONS)) {
+                    const assetName = assetId.replace(/_/g, ' ');
+                    container.innerHTML += `
+                        <div class="asset-card">
+                            <div class="asset-icon">
+                                <i class="fa-solid ${details.icon || 'fa-shield-halved'}"></i>
+                            </div>
+                            <div class="asset-content">
+                                <h3>${assetName}</h3>
+                                <div class="details">
+                                    <p>القوة القتالية: <span style="color:var(--danger)">${formatNumber(details.value)}</span></p>
+                                    <p>التكلفة: <span>${formatNumber(details.cost)} $</span></p>
+                                </div>
+                            </div>
+                            <button class="buy-btn" data-asset-id="${assetId}">
+                                <i class="fas fa-cart-plus"></i> <span>شراء</span>
+                            </button>
+                        </div>
+                    `;
+                }
+                container.querySelectorAll('.buy-btn').forEach(button => {
+                    button.addEventListener('click', () => buyAsset(button.dataset.assetId));
+                });
+            }
+            
+            async function buyAsset(assetId) {
+                const button = document.querySelector(`[data-asset-id="${assetId}"]`);
+                button.disabled = true;
+                button.innerHTML = `<i class="fas fa-spinner fa-spin"></i>`;
+
+                const asset = ASSET_DEFINITIONS[assetId];
+                const userId = auth.currentUser.uid;
+                const userRef = database.ref(`users/${userId}`);
+                
+                try {
+                    if (!asset || currentUserData.balance < asset.cost) {
+                        throw new Error("رصيدك غير كافٍ أو الأصل غير صالح.");
+                    }
+
+                    const newBalance = currentUserData.balance - asset.cost;
+                    const newAssets = { ...(currentUserData.assets || {}) };
+                    newAssets[assetId] = (newAssets[assetId] || 0) + 1;
+                    
+                    let newMilitaryPower = (currentUserData.militaryPower || 0) + asset.value;
+
+                    await userRef.update({
+                        balance: newBalance,
+                        assets: newAssets,
+                        militaryPower: newMilitaryPower
+                    });
+
+                    showNotification(`تم شراء "${assetId.replace(/_/g, ' ')}" بنجاح!`, 'success');
+                
+                } catch (error) {
+                    showNotification(error.message, 'error');
+                } finally {
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-cart-plus"></i> <span>شراء</span>';
+                }
+            }
+            
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    firestore.collection('users').doc(user.uid).get().then(doc => {
+                        if (doc.exists) {
+                            const profileData = doc.data();
+                            document.getElementById('profileHeadName').textContent = profileData.headName;
+                            document.getElementById('profileCountryName').textContent = profileData.country;
+                            document.getElementById('profileUserId').textContent = user.uid;
+                        }
+                    });
+
+                    const userRef = database.ref(`users/${user.uid}`);
+                    userRef.on('value', (snapshot) => {
+                        currentUserData = snapshot.val();
+                        if (currentUserData) {
+                            updateUI(currentUserData);
+                        } else {
+                           window.location.href = 'index.html?reason=no_data_found';
+                        }
+                    });
+
+                    renderTanks();
+                } else {
+                    window.location.href = 'index.html?reason=not_authenticated';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
