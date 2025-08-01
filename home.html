@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>القيادة العليا - لوحة التحكم</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap');
+        :root {
+            --background: #0D1117;
+            --surface: #161B22;
+            --surface-gradient: linear-gradient(145deg, #1A2029, #12171E);
+            --primary: #58A6FF;
+            --primary-light: rgba(88, 166, 255, 0.1);
+            --border: #30363D;
+            --text-primary: #C9D1D9;
+            --text-secondary: #8B949E;
+            --success: #3FB950;
+            --danger: #F85149;
+            --warning: #D29922;
+        }
+        * {
+            font-family: 'Almarai', sans-serif;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            display: flex;
+        }
+        #sidebar {
+            width: 260px;
+            background: var(--surface-gradient);
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 1rem;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+        }
+        #main-content {
+            margin-right: 260px;
+            width: calc(100% - 260px);
+            padding: 2rem;
+            overflow-y: auto;
+            height: 100vh;
+        }
+        .profile-section {
+            text-align: center;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+        .profile-section h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .profile-section p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .user-id-wrapper {
+            background-color: var(--background);
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            border: 1px solid var(--border);
+            text-align: center;
+            word-break: break-all;
+        }
+        .nav-menu a, .nav-menu button {
+            display: flex; align-items: center;
+            padding: 0.75rem; border-radius: 0.375rem;
+            text-decoration: none; color: var(--text-secondary);
+            font-weight: 700; transition: all 0.2s ease-in-out;
+            margin-bottom: 0.5rem; width: 100%; text-align: right;
+        }
+        .nav-menu a:hover, .nav-menu button:hover {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+        .nav-menu i {
+            margin-left: 0.75rem; width: 20px; text-align: center;
+        }
+        .nav-menu .logout-btn {
+            margin-top: auto; color: var(--danger);
+        }
+        .nav-menu .logout-btn:hover {
+            background-color: rgba(248, 81, 73, 0.1);
+            color: var(--danger);
+        }
+        .stat-card {
+            background: var(--surface-gradient);
+            border-radius: 0.75rem; padding: 1.5rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        .stat-card .header {
+            display: flex; align-items: center;
+            color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;
+        }
+        .stat-card i { margin-left: 0.5rem; }
+        .stat-card .value {
+            font-size: 1.75rem; font-weight: 800; color: var(--text-primary);
+            letter-spacing: 0.5px;
+        }
+        .section-header {
+            font-size: 1.75rem; font-weight: 800;
+            margin-bottom: 1.5rem; color: var(--text-primary);
+        }
+        .asset-card, .store-btn {
+            background: var(--surface-gradient);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem; padding: 1.5rem;
+            text-align: center; transition: all 0.2s ease-in-out;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .asset-card:hover, .store-btn:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-light);
+        }
+        .asset-card h3 {
+            font-size: 1.1rem; font-weight: 700;
+            color: var(--text-primary); margin-bottom: 0.5rem;
+        }
+        .asset-card p {
+            font-size: 0.9rem; color: var(--text-secondary);
+        }
+        .asset-card .value {
+            font-weight: 700; margin-top: 1rem;
+        }
+        .store-btn { cursor: pointer; }
+        .store-btn i {
+            font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;
+        }
+        .store-btn span {
+            font-size: 1.25rem; font-weight: 700; display: block;
+        }
+        .notification {
+            position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 2000;
+            background-color: #1E293B; border-radius: 0.5rem;
+            padding: 1rem 1.5rem; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(calc(100% + 2rem)); transition: transform 0.4s ease-in-out;
+            color: white; min-width: 350px; display: flex; align-items: center; gap: 1rem;
+            border-top: 3px solid var(--primary);
+        }
+        .notification.show { transform: translateY(0); }
+        .notification i { font-size: 1.25rem; }
+        .grid { display: grid; gap: 1.5rem; }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        @media (max-width: 1200px) {
+            .grid-4 { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 992px) {
+            #sidebar { display: none; }
+            #main-content { margin-right: 0; width: 100%; }
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .grid-3, .grid-4 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <aside id="sidebar">
+        <div class="profile-section">
+            <h2 id="profileHeadName">جار التحميل...</h2>
+            <p id="profileCountryName">جار التحميل...</p>
+            <div class="user-id-wrapper">
+                <span id="profileUserId">...</span>
+            </div>
+        </div>
+        <nav class="nav-menu flex flex-col flex-grow">
+            <a href="#"><i class="fas fa-home"></i> <span>الرئيسية</span></a>
+            <a href="economic_store.html"><i class="fas fa-landmark"></i> <span>الاستثمارات الوطنية</span></a>
+            <a href="tanks_store.html"><i class="fa-solid fa-shield-halved"></i> <span>القوات البرية</span></a>
+            <a href="aircraft_store.html"><i class="fas fa-paper-plane"></i> <span>القوات الجوية</span></a>
+            <a href="world.html"><i class="fas fa-crosshairs"></i> <span>الأسلحة الاستراتيجية</span></a>
+            <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>تسجيل الخروج</span></button>
+        </nav>
+    </aside>
+
+    <div id="main-content">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold">ملخص الأداء</h1>
+        </header>
+        
+        <section class="grid grid-3 mb-8">
+            <div class="stat-card">
+                <div class="header"><i class="fas fa-wallet" style="color: var(--warning);"></i> <span>الخزينة العامة</span></div>
+                <p id="balance" class="value">...</p>
+            </div>
+            <div class="stat-card">
+                <div class="header"><i class="fas fa-hand-holding-dollar" style="color: var(--success);"></i> <span>الدخل اليومي</span></div>
+                <p id="dailyIncome" class="value">...</p>
+            </div>
+            <div class="stat-card">
+                <div class="header"><i class="fas fa-fire" style="color: var(--danger);"></i> <span>القوة العسكرية</span></div>
+                <p id="militaryPower" class="value">...</p>
+            </div>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="section-header">الأصول الوطنية</h2>
+            <div id="ownedAssets" class="grid grid-4">
+                <p class="text-text-secondary col-span-full">لا توجد أصول حالياً</p>
+            </div>
+        </section>
+        
+        <section>
+            <h2 class="section-header">الوصول السريع للمتاجر</h2>
+            <div class="grid grid-4">
+                <button class="store-btn" onclick="navigateTo('economic_store.html')">
+                    <i class="fas fa-landmark"></i> <span>الاستثمارات</span>
+                </button>
+                <button class="store-btn" onclick="navigateTo('tanks_store.html')">
+                    <i class="fa-solid fa-shield-halved"></i> <span>البرية</span>
+                </button>
+                <button class="store-btn" onclick="navigateTo('aircraft_store.html')">
+                    <i class="fas fa-paper-plane"></i> <span>الجوية</span>
+                </button>
+                <button class="store-btn" onclick="navigateTo('missiles_store.html')">
+                    <i class="fas fa-crosshairs"></i> <span>الاستراتيجية</span>
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <div id="notification" class="notification">
+        <i id="notificationIcon"></i>
+        <p id="notificationMessage"></p>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <script>
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const msgElem = document.getElementById('notificationMessage');
+            const iconElem = document.getElementById('notificationIcon');
+            if (!notification || !msgElem || !iconElem) return;
+
+            const icons = { success: 'fas fa-check-circle', error: 'fas fa-times-circle', info: 'fas fa-info-circle' };
+            const colors = { success: 'var(--success)', error: 'var(--danger)', info: 'var(--primary)' };
+            
+            notification.style.borderTopColor = colors[type] || colors.info;
+            iconElem.className = icons[type] || icons.info;
+            iconElem.style.color = colors[type] || colors.info;
+            msgElem.textContent = message;
+            notification.classList.add('show');
+
+            setTimeout(() => notification.classList.remove('show'), 4000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const firebaseConfig = {
+                apiKey: "AIzaSyDtj_AsssLYm7ZZpgFeUTqYNCrAUevOprs",
+                authDomain: "the-chess-game-54a2c.firebaseapp.com",
+                databaseURL: "https://the-chess-game-54a2c-default-rtdb.firebaseio.com",
+                projectId: "the-chess-game-54a2c",
+                storageBucket: "the-chess-game-54a2c.firebasestorage.app",
+                messagingSenderId: "1012470944135",
+                appId: "1:1012470944135:web:353bd44c8f5f7d8dcdc322"
+            };
+
+            try {
+                firebase.initializeApp(firebaseConfig);
+            } catch (e) {
+                document.body.innerHTML = `<div style="color: red; text-align: center; margin-top: 50px;">خطأ فادح في تهيئة التطبيق.</div>`;
+                return;
+            }
+
+            const auth = firebase.auth();
+            const firestore = firebase.firestore();
+            const database = firebase.database();
+
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                auth.signOut().then(() => {
+                    window.location.href = 'index.html';
+                });
+            });
+            
+            const ASSET_DEFINITIONS = {
+                'منجم_الذهب': { value: 9000000, type: 'اقتصادي' }, 'منجم_الماس': { value: 16000000, type: 'اقتصادي' },
+                'حقل_النفط': { value: 25000000, type: 'اقتصادي' }, 'محطة_نووية': { value: 120000000, type: 'اقتصادي' },
+                'كتيبة_المشاة': { value: 4000, type: 'عسكري' }, 'كتيبة_القناصة': { value: 5500, type: 'عسكري' },
+                'كتيبة_الهجومية_الجوية': { value: 12000, type: 'عسكري' }, 'كتيبة_المدرعات': { value: 14000, type: 'عسكري' },
+                'كتيبة_النخبة_الخاصة': { value: 25000, type: 'عسكري' }, 'طائرة_مقاتلة': { value: 35000, type: 'عسكري' },
+                'طائرة_قاذفة': { value: 60000, type: 'عسكري' }, 'صاروخ_باليستي': { value: 80000, type: 'عسكري' },
+                'صاروخ_كروز': { value: 45000, type: 'عسكري' }, 'T90': { value: 15000, type: 'عسكري' },
+                'Abrams': { value: 19000, type: 'عسكري' }, 'Leopard2': { value: 16500, type: 'عسكري' },
+                'Merkava': { value: 15500, type: 'عسكري' }, 'Challenger2': { value: 18000, type: 'عسكري' },
+            };
+            
+            function formatNumber(num) {
+                return num.toLocaleString('en-US');
+            }
+
+            function updateUI(gameData) {
+                const { balance = 0, dailyIncome = 0, militaryPower = 0, assets = {} } = gameData;
+                document.getElementById('balance').textContent = `${formatNumber(balance)} $`;
+                document.getElementById('dailyIncome').textContent = `${formatNumber(dailyIncome)} $`;
+                document.getElementById('militaryPower').textContent = formatNumber(militaryPower);
+                const ownedAssetsDiv = document.getElementById('ownedAssets');
+                ownedAssetsDiv.innerHTML = '';
+                if (Object.keys(assets).length === 0) {
+                    ownedAssetsDiv.innerHTML = `<p class="text-secondary col-span-full">لا توجد أصول مسجلة حالياً</p>`;
+                    return;
+                }
+                for (const [assetName, count] of Object.entries(assets)) {
+                    const assetDef = ASSET_DEFINITIONS[assetName];
+                    if (assetDef) {
+                        let displayValue = '';
+                        if (assetDef.type === 'اقتصادي') {
+                            displayValue = `<p class="value" style="color: var(--success);">+${formatNumber(assetDef.value * count)} $ / يوم</p>`;
+                        } else if (assetDef.type === 'عسكري') {
+                            displayValue = `<p class="value" style="color: var(--danger);">${formatNumber(assetDef.value * count)} قوة</p>`;
+                        }
+                        ownedAssetsDiv.innerHTML += `
+                            <div class="asset-card">
+                                <h3>${assetName.replace(/_/g, ' ')}</h3>
+                                <p>الكمية: ${formatNumber(count)}</p>
+                                ${displayValue}
+                            </div>`;
+                    }
+                }
+            }
+
+            async function checkAndUpdateDailyIncome(userRef, gameData) {
+                const now = new Date();
+                const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())).toISOString().split('T')[0];
+                const lastClaimDate = gameData.lastClaimDate || "1970-01-01";
+                if (todayUTC > lastClaimDate) {
+                    const income = gameData.dailyIncome || 0;
+                    if (income > 0) {
+                        const newBalance = (gameData.balance || 0) + income;
+                        await userRef.update({ balance: newBalance, lastClaimDate: todayUTC });
+                        gameData.balance = newBalance;
+                        gameData.lastClaimDate = todayUTC;
+                        showNotification(`تمت إضافة دخلك اليومي البالغ ${formatNumber(income)} $`, 'success');
+                    } else {
+                         await userRef.update({ lastClaimDate: todayUTC });
+                         gameData.lastClaimDate = todayUTC;
+                    }
+                }
+                return gameData;
+            }
+
+            async function initializeUser(user) {
+                const firestoreDocRef = firestore.collection('users').doc(user.uid);
+                let firestoreDoc = await firestoreDocRef.get();
+                let profileData;
+
+                if (!firestoreDoc.exists || !firestoreDoc.data().headName || !firestoreDoc.data().country) {
+                    profileData = { headName: "القائد", country: "الدولة الجديدة" };
+                    await firestoreDocRef.set(profileData, { merge: true });
+                } else {
+                    profileData = firestoreDoc.data();
+                }
+
+                document.getElementById('profileHeadName').textContent = profileData.headName;
+                document.getElementById('profileCountryName').textContent = profileData.country;
+                document.getElementById('profileUserId').textContent = user.uid;
+
+                const rtdbUserRef = database.ref(`users/${user.uid}`);
+                let gameDataSnapshot = await rtdbUserRef.get();
+                let gameData;
+
+                if (!gameDataSnapshot.exists()) {
+                    gameData = { balance: 100000000, assets: {}, dailyIncome: 0, militaryPower: 0, lastClaimDate: "1970-01-01" };
+                    await rtdbUserRef.set(gameData);
+                } else {
+                    gameData = gameDataSnapshot.val();
+                }
+
+                const updatedGameData = await checkAndUpdateDailyIncome(rtdbUserRef, gameData);
+                updateUI(updatedGameData);
+            }
+            
+            window.navigateTo = (url) => { window.location.href = url; };
+
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    initializeUser(user).catch(error => {
+                        showNotification(`حدث خطأ فادح: ${error.message}`, 'error');
+                    });
+                } else {
+                    window.location.href = 'index.html?reason=not_authenticated';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
