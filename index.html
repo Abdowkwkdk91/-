@@ -390,7 +390,7 @@
         <input type="text" id="headName" placeholder="لقب القائد" required>
         <input type="password" id="signupPassword" placeholder="كلمة المرور" required>
         <button id="signupButton" class="btn btn-primary">تأسيس الأمة</button>
-        <div class="error" id="signupError"></div>
+        <div class="error" id="signupError" style="display:none;"></div>
         <div class="toggle-link" id="showLoginLink">لديك حساب؟ تسجيل الدخول</div>
     </div>
 
@@ -399,7 +399,7 @@
         <input type="email" id="loginEmail" placeholder="البريد الإلكتروني" required>
         <input type="password" id="loginPassword" placeholder="كلمة المرور" required>
         <button id="signInButton" class="btn btn-primary">دخول مركز القيادة</button>
-        <div class="error" id="loginError"></div>
+        <div class="error" id="loginError" style="display:none;"></div>
         <div class="toggle-link" id="showSignUpLink">تأسيس أمة جديدة</div>
     </div>
 
@@ -441,6 +441,12 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         const rtdb = firebase.database();
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                window.location.replace("home.html");
+            }
+        });
 
         function showNotification(message, type) {
             const nDiv = document.getElementById('notification');
@@ -664,4 +670,4 @@
         });
     </script>
 </body>
-</html>
+    </html>
