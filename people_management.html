@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الشعب</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap');
+        :root {
+            --background: #0D1117;
+            --surface: #161B22;
+            --surface-gradient: linear-gradient(145deg, #1A2029, #12171E);
+            --primary: #58A6FF;
+            --primary-light: rgba(88, 166, 255, 0.1);
+            --border: #30363D;
+            --text-primary: #C9D1D9;
+            --text-secondary: #8B949E;
+            --success: #3FB950;
+            --danger: #F85149;
+            --warning: #D29922;
+        }
+        * {
+            font-family: 'Almarai', sans-serif;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            display: flex;
+        }
+        #sidebar {
+            width: 260px;
+            background: var(--surface);
+            height: 100vh;
+            position: fixed;
+            right: 0;
+            top: 0;
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 1rem;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+        }
+        #main-content {
+            margin-right: 260px;
+            width: calc(100% - 260px);
+            padding: 2rem;
+            overflow-y: auto;
+            height: 100vh;
+        }
+        .profile-section h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .nav-menu a, .nav-menu button {
+            display: flex; align-items: center;
+            padding: 0.75rem; border-radius: 0.375rem;
+            text-decoration: none; color: var(--text-secondary);
+            font-weight: 700; transition: all 0.2s ease-in-out;
+            margin-bottom: 0.5rem; width: 100%; text-align: right;
+        }
+        .nav-menu a:hover, .nav-menu button:hover {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+        .nav-menu i {
+            margin-left: 0.75rem; width: 20px; text-align: center;
+        }
+        .nav-menu .logout-btn {
+            margin-top: auto; color: var(--danger);
+        }
+        .nav-menu .logout-btn:hover {
+            background-color: rgba(248, 81, 73, 0.1);
+        }
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: var(--surface-gradient);
+            border-radius: 0.75rem; padding: 1.5rem;
+            border: 1px solid var(--border);
+        }
+        .stat-card .header {
+            display: flex; align-items: center;
+            color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;
+        }
+        .stat-card i { margin-left: 0.5rem; }
+        .stat-card .value {
+            font-size: 1.75rem; font-weight: 800; color: var(--text-primary);
+        }
+        .section-card {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 2rem;
+        }
+        .section-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: var(--background);
+            border-radius: 5px;
+            outline: none;
+            border: 1px solid var(--border);
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            cursor: pointer;
+            border-radius: 50%;
+            border: 3px solid var(--surface);
+        }
+        .tax-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            min-width: 70px;
+            text-align: center;
+        }
+        .tax-effects p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .tax-effects span {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .btn {
+            background-color: var(--primary);
+            color: white; border: none; padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem; font-weight: 700; cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+        }
+        .btn:hover:not(:disabled) { background-color: #4A90E2; transform: translateY(-2px); }
+        .btn:disabled { background-color: var(--border); color: var(--text-secondary); cursor: not-allowed; }
+        .btn.btn-danger { background-color: var(--danger); }
+        .btn.btn-danger:hover:not(:disabled) { background-color: #C53030; }
+        .item-card {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            display: flex; flex-direction: column;
+        }
+        .item-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .item-card h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .item-card p { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem; flex-grow: 1; }
+        .event-log { list-style: none; padding: 0; max-height: 200px; overflow-y: auto; }
+        .event-log li { background-color: var(--surface); border: 1px solid var(--border); border-right-width: 4px; padding: 0.75rem; border-radius: 0.375rem; margin-bottom: 0.5rem; font-size: 0.9rem;}
+        .event-log li.success { border-right-color: var(--success); }
+        .event-log li.danger { border-right-color: var(--danger); }
+        .event-log li.warning { border-right-color: var(--warning); }
+        #notification {
+            position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 2000;
+            background-color: #1E293B; border-radius: 0.5rem;
+            padding: 1rem 1.5rem; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(calc(100% + 2rem)); transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+            color: white; min-width: 350px; display: flex; align-items: center; gap: 1rem;
+            border-top: 3px solid var(--primary);
+            opacity: 0;
+        }
+        #notification.show { transform: translateY(0); opacity: 1;}
+        #notification i { font-size: 1.25rem; }
+        .grid { display: grid; gap: 1.5rem; }
+        .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        @media (max-width: 1400px) { .grid-5 { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 1200px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 992px) {
+            #sidebar { display: none; }
+            #main-content { margin-right: 0; width: 100%; }
+            .grid-5 { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) { .grid-5, .grid-4 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <aside id="sidebar">
+        <div class="profile-section">
+            <h2 id="profileHeadName">جار التحميل...</h2>
+            <p id="profileCountryName">جار التحميل...</p>
+        </div>
+        <nav class="nav-menu flex flex-col flex-grow">
+            <div>
+                <a href="home.html"><i class="fas fa-home"></i> <span>الرئيسية</span></a>
+                <a href="people_management.html" style="background-color: var(--primary-light); color: var(--primary);"><i class="fas fa-users"></i> <span>إدارة الشعب</span></a>
+                <a href="economic_store.html"><i class="fas fa-landmark"></i> <span>الاستثمارات</span></a>
+                <a href="tanks_store.html"><i class="fa-solid fa-shield-halved"></i> <span>القوات البرية</span></a>
+                <a href="aircraft_store.html"><i class="fas fa-paper-plane"></i> <span>القوات الجوية</span></a>
+                <a href="world.html"><i class="fas fa-crosshairs"></i> <span>الأسلحة الاستراتيجية</span></a>
+            </div>
+            <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>تسجيل الخروج</span></button>
+        </nav>
+    </aside>
+
+    <div id="main-content">
+        <header class="page-header">
+            <h1><i class="fas fa-users text-primary"></i> إدارة الشعب</h1>
+        </header>
+
+        <section class="grid grid-5 mb-6">
+            <div class="stat-card"><div class="header"><i class="fas fa-users" style="color: var(--primary)"></i><span>عدد السكان</span></div><p id="population" class="value">...</p></div>
+            <div class="stat-card"><div class="header"><i class="fas fa-baby" style="color: var(--success)"></i><span>معدل المواليد</span></div><p id="birthRate" class="value">...</p></div>
+            <div class="stat-card"><div class="header"><i class="fas fa-cross" style="color: var(--danger)"></i><span>معدل الوفيات</span></div><p id="deathRate" class="value">...</p></div>
+            <div class="stat-card"><div class="header"><i class="fas fa-smile" style="color: var(--warning)"></i><span>الرضا العام</span></div><p id="morale" class="value">... %</p></div>
+            <div class="stat-card"><div class="header"><i class="fas fa-calendar-day" style="color: var(--text-secondary)"></i><span>الحدث القادم بعد</span></div><p id="eventTimer" class="value" style="font-size: 1.5rem;">...</p></div>
+        </section>
+
+        <section class="section-card mb-6">
+            <h3 class="section-header">السياسة الضريبية</h3>
+            <div class="slider-container mb-4"><input type="range" id="taxRateSlider" min="0" max="50" value="10"><div id="taxRateValue" class="tax-value">10%</div></div>
+            <div class="tax-effects mb-4">
+                <p>الدخل اليومي المتوقع من الضرائب: <span id="taxIncome">...</span></p>
+                <p>التأثير المتوقع على المعنويات: <span id="moraleEffect">...</span></p>
+            </div>
+            <button id="applyTaxesBtn" class="btn"><i class="fas fa-save"></i> تطبيق</button>
+        </section>
+
+        <section class="section-card mb-6">
+            <h3 class="section-header">السياسات الوطنية</h3>
+            <div id="nationalPolicies" class="grid grid-4"></div>
+        </section>
+
+        <section class="section-card mb-6">
+            <h3 class="section-header">الخدمات والقرارات</h3>
+            <div id="services" class="grid grid-4"></div>
+        </section>
+
+        <section class="section-card">
+            <h3 class="section-header">آخر الأحداث</h3>
+            <ul id="eventLog" class="event-log"></ul>
+        </section>
+    </div>
+    
+    <div id="notification"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const firebaseConfig = {
+                apiKey: "AIzaSyDtj_AsssLYm7ZZpgFeUTqYNCrAUevOprs",
+                authDomain: "the-chess-game-54a2c.firebaseapp.com",
+                databaseURL: "https://the-chess-game-54a2c-default-rtdb.firebaseio.com",
+                projectId: "the-chess-game-54a2c",
+                storageBucket: "the-chess-game-54a2c.firebasestorage.app",
+                messagingSenderId: "1012470944135",
+                appId: "1:1012470944135:web:353bd44c8f5f7d8dcdc322"
+            };
+
+            try { firebase.initializeApp(firebaseConfig); } catch (e) {
+                document.body.innerHTML = `<div>خطأ فادح في تهيئة التطبيق.</div>`;
+                return;
+            }
+
+            const auth = firebase.auth();
+            const firestore = firebase.firestore();
+            const database = firebase.database();
+            
+            const UI = {
+                profileHeadName: document.getElementById('profileHeadName'),
+                profileCountryName: document.getElementById('profileCountryName'),
+                population: document.getElementById('population'),
+                birthRate: document.getElementById('birthRate'),
+                deathRate: document.getElementById('deathRate'),
+                morale: document.getElementById('morale'),
+                taxRateSlider: document.getElementById('taxRateSlider'),
+                taxRateValue: document.getElementById('taxRateValue'),
+                taxIncome: document.getElementById('taxIncome'),
+                moraleEffect: document.getElementById('moraleEffect'),
+                applyTaxesBtn: document.getElementById('applyTaxesBtn'),
+                nationalPolicies: document.getElementById('nationalPolicies'),
+                services: document.getElementById('services'),
+                eventLog: document.getElementById('eventLog'),
+                notification: document.getElementById('notification'),
+                logoutBtn: document.getElementById('logoutBtn'),
+                eventTimer: document.getElementById('eventTimer')
+            };
+            
+            let currentUserData = {};
+            let rtdbUserRef;
+            let eventCountdownInterval;
+
+            const formatNumber = (num) => num.toLocaleString('en-US');
+
+            function showNotification(message, type = 'info') {
+                const notification = UI.notification;
+                notification.innerHTML = `<i class="fas fa-info-circle"></i><p>${message}</p>`;
+                const icons = { success: 'fa-check-circle', error: 'fa-times-circle', info: 'fa-info-circle' };
+                const colors = { success: 'var(--success)', error: 'var(--danger)', info: 'var(--primary)' };
+                const style = colors[type] || colors.info;
+                notification.style.borderTopColor = style;
+                notification.querySelector('i').className = `fas ${icons[type] || icons.info}`;
+                notification.querySelector('i').style.color = style;
+                notification.classList.add('show');
+                setTimeout(() => notification.classList.remove('show'), 3000);
+            }
+
+            const SERVICES = {
+                food_support: { name: 'دعم الغذاء', icon: 'fa-utensils', cost: 5000000, morale_boost: 3, description: 'زيادة الرضا العام بتوفير أساسيات العيش.' },
+                education_dev: { name: 'تطوير التعليم', icon: 'fa-school', cost: 15000000, birth_rate_increase: 50, description: 'استثمار في مستقبل أمتك لزيادة الابتكار.' },
+                health_improve: { name: 'تحسين الصحة', icon: 'fa-heart-pulse', cost: 20000000, death_rate_decrease: 25, description: 'بناء مستشفيات لخفض معدل الوفيات.' },
+                media_campaign: { name: 'حملة إعلامية', icon: 'fa-bullhorn', cost: 2000000, morale_boost: 5, description: 'رفع معنويات شعبك بشكل فوري.' },
+            };
+
+            const POLICIES = {
+                free_education: { name: 'التعليم المجاني', icon: 'fa-graduation-cap', cost: 1500000000, effects: { morale: 0.1, daily_cost: 100000 }, description: 'تأثير دائم: +0.1 معنويات/ساعة، -100 ألف $/يوم.' },
+                military_service: { name: 'الخدمة الإلزامية', icon: 'fa-shield-halved', cost: 1200000000, effects: { morale: -0.2, military: 0.05 }, description: 'تأثير دائم: -0.2 معنويات/ساعة، +5% قوة دفاعية.' },
+            };
+
+            const EVENTS = {
+                high_morale: [
+                    { text: 'ازدهار اقتصادي مفاجئ يزيد من خزينة الدولة.', type: 'success', effect: { balance: 500000 } },
+                    { text: 'مهرجانات وطنية ترفع من رضا الشعب.', type: 'success', effect: { morale: 2 } },
+                    { text: 'اكتشاف علمي جديد يعزز من النمو السكاني.', type: 'success', effect: { birthRate: 20 } },
+                ],
+                low_morale: [
+                    { text: 'احتجاجات شعبية تكلف الدولة خسائر مادية.', type: 'danger', effect: { balance: -1000000 } },
+                    { text: 'إضرابات في المصانع تخفض من المعنويات أكثر.', type: 'danger', effect: { morale: -3 } },
+                    { text: 'انتشار جريمة منظمة يرفع من معدل الوفيات.', type: 'danger', effect: { deathRate: 50 } },
+                ]
+            };
+            
+            function renderDynamicContent() {
+                UI.services.innerHTML = '';
+                for (const [id, service] of Object.entries(SERVICES)) {
+                    UI.services.innerHTML += `
+                        <div class="item-card">
+                            <i class="fas ${service.icon}"></i><h4>${service.name}</h4><p>${service.description}</p>
+                            <button class="btn service-btn" data-id="${id}" ${currentUserData.balance < service.cost ? 'disabled' : ''}>
+                                تفعيل (${formatNumber(service.cost)} $)
+                            </button>
+                        </div>`;
+                }
+                UI.nationalPolicies.innerHTML = '';
+                for (const [id, policy] of Object.entries(POLICIES)) {
+                    const isActive = currentUserData.activePolicies && currentUserData.activePolicies[id];
+                    UI.nationalPolicies.innerHTML += `
+                        <div class="item-card">
+                            <i class="fas ${policy.icon}"></i><h4>${policy.name}</h4><p>${policy.description}</p>
+                            <button class="btn ${isActive ? 'btn-danger' : ''} policy-btn" data-id="${id}" ${!isActive && currentUserData.balance < policy.cost ? 'disabled' : ''}>
+                                ${isActive ? 'إلغاء' : `تفعيل (${formatNumber(policy.cost)} $)`}
+                            </button>
+                        </div>`;
+                }
+                document.querySelectorAll('.service-btn').forEach(b => b.addEventListener('click', handleServicePurchase));
+                document.querySelectorAll('.policy-btn').forEach(b => b.addEventListener('click', handlePolicyToggle));
+            }
+
+            function updateTaxEffects(taxRate, population) {
+                const baseIncomePerCitizen = 10;
+                const dailyTaxIncome = (population * baseIncomePerCitizen * (taxRate / 100));
+                UI.taxIncome.textContent = `+${formatNumber(Math.floor(dailyTaxIncome))} $ يومياً`;
+                const moraleImpact = taxRate * 0.2;
+                UI.moraleEffect.textContent = `-${moraleImpact.toFixed(1)} معنويات يومياً`;
+                UI.moraleEffect.style.color = moraleImpact > 0 ? 'var(--danger)' : 'var(--success)';
+            }
+            
+            function updateUI(data) {
+                currentUserData = data;
+                UI.population.textContent = formatNumber(data.population || 0);
+                UI.birthRate.textContent = `+${formatNumber(data.birthRate || 0)} / يوم`;
+                UI.deathRate.textContent = `-${formatNumber(data.deathRate || 0)} / يوم`;
+                UI.morale.textContent = `${Math.floor(data.morale || 0)} %`;
+                const currentTaxRate = data.taxRate || 10;
+                UI.taxRateSlider.value = currentTaxRate;
+                UI.taxRateValue.textContent = `${currentTaxRate}%`;
+                updateTaxEffects(currentTaxRate, data.population || 0);
+                renderDynamicContent();
+                renderEventLog();
+            }
+
+            function renderEventLog() {
+                UI.eventLog.innerHTML = '';
+                const events = currentUserData.events || [];
+                const sortedEvents = Object.values(events).sort((a, b) => b.timestamp - a.timestamp).slice(0, 10);
+                if (sortedEvents.length === 0) {
+                    UI.eventLog.innerHTML = `<li>لا توجد أحداث جديدة.</li>`;
+                } else {
+                    sortedEvents.forEach(event => {
+                        UI.eventLog.innerHTML += `<li class="${event.type}">${new Date(event.timestamp).toLocaleString('ar-DZ')} - ${event.text}</li>`;
+                    });
+                }
+            }
+
+            function startEventTimer() {
+                if (eventCountdownInterval) clearInterval(eventCountdownInterval);
+                eventCountdownInterval = setInterval(() => {
+                    const now = new Date();
+                    const algeriaTimeOffset = 1;
+                    const nowUTC = now.getTime() + (now.getTimezoneOffset() * 60000);
+                    const nowAlgeria = new Date(nowUTC + (3600000 * algeriaTimeOffset));
+                    
+                    let nextEventTime = new Date(nowAlgeria);
+                    if (nowAlgeria.getHours() < 12) {
+                        nextEventTime.setHours(12, 0, 0, 0);
+                    } else if (nowAlgeria.getHours() < 20) {
+                        nextEventTime.setHours(20, 0, 0, 0);
+                    } else {
+                        nextEventTime.setDate(nextEventTime.getDate() + 1);
+                        nextEventTime.setHours(12, 0, 0, 0);
+                    }
+                    
+                    const distance = nextEventTime - nowAlgeria;
+                    const hours = Math.floor(distance / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    
+                    UI.eventTimer.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                }, 1000);
+            }
+
+            async function initializeUser(user) {
+                const firestoreDocRef = firestore.collection('users').doc(user.uid);
+                const firestoreDoc = await firestoreDocRef.get();
+                if (firestoreDoc.exists) {
+                    const profileData = firestoreDoc.data();
+                    UI.profileHeadName.textContent = profileData.headName;
+                    UI.profileCountryName.textContent = profileData.country;
+                }
+                
+                rtdbUserRef = database.ref(`users/${user.uid}`);
+                const snapshot = await rtdbUserRef.get();
+                if (snapshot.exists()) {
+                    currentUserData = snapshot.val();
+                    if (currentUserData.population === undefined) {
+                        currentUserData.population = 1000000;
+                        currentUserData.birthRate = 500;
+                        currentUserData.deathRate = 150;
+                        currentUserData.taxRate = 10;
+                        await rtdbUserRef.update({ population: 1000000, birthRate: 500, deathRate: 150, taxRate: 10 });
+                    }
+                    await checkAndTriggerEvents();
+                    updateUI(currentUserData);
+                    startEventTimer();
+                } else {
+                    window.location.href = 'home.html';
+                }
+            }
+            
+            async function handleServicePurchase(event) {
+                const serviceId = event.target.dataset.id;
+                const service = SERVICES[serviceId];
+                if (!currentUserData || currentUserData.balance < service.cost) {
+                    showNotification('رصيدك غير كافٍ.', 'error');
+                    return;
+                }
+
+                const updates = { balance: currentUserData.balance - service.cost };
+                if(service.morale_boost) updates.morale = Math.min(100, (currentUserData.morale || 0) + service.morale_boost);
+                if(service.birth_rate_increase) updates.birthRate = (currentUserData.birthRate || 0) + service.birth_rate_increase;
+                if(service.death_rate_decrease) updates.deathRate = Math.max(0, (currentUserData.deathRate || 0) - service.death_rate_decrease);
+                
+                await rtdbUserRef.update(updates);
+                showNotification(`تم تفعيل خدمة "${service.name}" بنجاح!`, 'success');
+                updateUI({...currentUserData, ...updates});
+            }
+
+            async function handlePolicyToggle(event) {
+                const policyId = event.target.dataset.id;
+                const policy = POLICIES[policyId];
+                const isActive = currentUserData.activePolicies && currentUserData.activePolicies[policyId];
+                let updates = { activePolicies: { ...currentUserData.activePolicies } };
+
+                if (isActive) {
+                    delete updates.activePolicies[policyId];
+                    showNotification(`تم إلغاء سياسة "${policy.name}".`, 'warning');
+                } else {
+                    if (currentUserData.balance < policy.cost) {
+                        showNotification('رصيدك غير كافٍ.', 'error'); return;
+                    }
+                    updates.balance = currentUserData.balance - policy.cost;
+                    updates.activePolicies[policyId] = true;
+                    showNotification(`تم تفعيل سياسة "${policy.name}"!`, 'success');
+                }
+                
+                await rtdbUserRef.update(updates);
+                updateUI({ ...currentUserData, ...updates });
+            }
+
+            async function checkAndTriggerEvents() {
+                const now = new Date();
+                const algeriaTimeOffset = 1;
+                const nowUTC = now.getTime() + (now.getTimezoneOffset() * 60000);
+                const nowAlgeria = new Date(nowUTC + (3600000 * algeriaTimeOffset));
+                
+                const eventTimes = [12, 20];
+                let updates = {};
+                let hasNewEvents = false;
+                let lastEventTimestamp = currentUserData.lastEventTimestamp || 0;
+
+                for (const hour of eventTimes) {
+                    let eventTriggerTime = new Date(nowAlgeria);
+                    eventTriggerTime.setHours(hour, 0, 0, 0);
+
+                    if(nowAlgeria >= eventTriggerTime && eventTriggerTime.getTime() > lastEventTimestamp) {
+                        const morale = currentUserData.morale || 75;
+                        const eventPool = morale < 40 ? EVENTS.low_morale : (morale > 75 ? EVENTS.high_morale : null);
+                        
+                        if(eventPool) {
+                            const randomEvent = eventPool[Math.floor(Math.random() * eventPool.length)];
+                            let newEventLog = currentUserData.events || [];
+                            newEventLog.push({ ...randomEvent, timestamp: eventTriggerTime.getTime() });
+
+                            for (const [key, value] of Object.entries(randomEvent.effect)) {
+                                currentUserData[key] = (currentUserData[key] || 0) + value;
+                            }
+                             if (morale < 40) {
+                                currentUserData.deathRate = (currentUserData.deathRate || 150) + 50; 
+                            }
+                            
+                            updates = { ...updates, ...currentUserData, events: newEventLog };
+                            showNotification(`حدث جديد: ${randomEvent.text}`, randomEvent.type);
+                        }
+                        lastEventTimestamp = eventTriggerTime.getTime();
+                        hasNewEvents = true;
+                    }
+                }
+                
+                if (hasNewEvents) {
+                    updates.lastEventTimestamp = lastEventTimestamp;
+                    await rtdbUserRef.update(updates);
+                }
+            }
+
+            UI.applyTaxesBtn.addEventListener('click', async () => {
+                const newTaxRate = parseInt(UI.taxRateSlider.value, 10);
+                UI.applyTaxesBtn.disabled = true;
+                await rtdbUserRef.update({ taxRate: newTaxRate });
+                showNotification('تم تحديث السياسة الضريبية!', 'success');
+                currentUserData.taxRate = newTaxRate;
+                updateUI(currentUserData);
+                UI.applyTaxesBtn.disabled = false;
+            });
+            
+            UI.taxRateSlider.addEventListener('input', (event) => {
+                UI.taxRateValue.textContent = `${event.target.value}%`;
+                updateTaxEffects(event.target.value, currentUserData.population || 0);
+            });
+
+            UI.logoutBtn.addEventListener('click', () => {
+                auth.signOut().then(() => { window.location.href = 'index.html'; });
+            });
+
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    initializeUser(user).catch(console.error);
+                } else {
+                    window.location.href = 'index.html?reason=not_authenticated';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
