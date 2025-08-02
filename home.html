@@ -28,40 +28,29 @@
         body {
             background-color: var(--background);
             color: var(--text-primary);
-            display: flex;
-        }
-        #sidebar {
-            width: 260px;
-            background: var(--surface-gradient);
-            height: 100vh;
-            position: fixed;
-            right: 0;
-            top: 0;
-            border-left: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem 1rem;
-            box-shadow: 2px 0 15px rgba(0,0,0,0.2);
         }
         #main-content {
-            margin-right: 260px;
-            width: calc(100% - 260px);
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
             padding: 2rem;
             overflow-y: auto;
-            height: 100vh;
         }
-        .profile-section {
+        .profile-card {
+            background: var(--surface-gradient);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
             text-align: center;
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 2rem;
         }
-        .profile-section h2 {
-            font-size: 1.2rem;
+        .profile-card h2 {
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary);
         }
-        .profile-section p {
-            font-size: 0.9rem;
+        .profile-card p {
+            font-size: 1rem;
             color: var(--text-secondary);
         }
         .user-id-wrapper {
@@ -69,33 +58,14 @@
             border-radius: 0.375rem;
             padding: 0.5rem;
             font-family: monospace;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
             margin-top: 1rem;
             border: 1px solid var(--border);
             text-align: center;
             word-break: break-all;
-        }
-        .nav-menu a, .nav-menu button {
-            display: flex; align-items: center;
-            padding: 0.75rem; border-radius: 0.375rem;
-            text-decoration: none; color: var(--text-secondary);
-            font-weight: 700; transition: all 0.2s ease-in-out;
-            margin-bottom: 0.5rem; width: 100%; text-align: right;
-        }
-        .nav-menu a:hover, .nav-menu button:hover {
-            background-color: var(--primary-light);
-            color: var(--primary);
-        }
-        .nav-menu i {
-            margin-left: 0.75rem; width: 20px; text-align: center;
-        }
-        .nav-menu .logout-btn {
-            margin-top: auto; color: var(--danger);
-        }
-        .nav-menu .logout-btn:hover {
-            background-color: rgba(248, 81, 73, 0.1);
-            color: var(--danger);
+            max-width: 300px;
+            margin: 1rem auto 0;
         }
         .stat-card {
             background: var(--surface-gradient);
@@ -120,14 +90,14 @@
             font-size: 1.75rem; font-weight: 800;
             margin-bottom: 1.5rem; color: var(--text-primary);
         }
-        .asset-card, .store-btn {
+        .asset-card, .action-btn {
             background: var(--surface-gradient);
             border: 1px solid var(--border);
             border-radius: 0.75rem; padding: 1.5rem;
             text-align: center; transition: all 0.2s ease-in-out;
             display: flex; flex-direction: column; justify-content: space-between;
         }
-        .asset-card:hover, .store-btn:hover {
+        .asset-card:hover, .action-btn:hover {
             transform: translateY(-5px);
             border-color: var(--primary);
             box-shadow: 0 0 20px var(--primary-light);
@@ -142,12 +112,22 @@
         .asset-card .value {
             font-weight: 700; margin-top: 1rem;
         }
-        .store-btn { cursor: pointer; }
-        .store-btn i {
+        .action-btn { cursor: pointer; }
+        .action-btn i {
             font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;
         }
-        .store-btn span {
+        .action-btn span {
             font-size: 1.25rem; font-weight: 700; display: block;
+        }
+        .action-btn.logout {
+            border-color: var(--danger);
+        }
+        .action-btn.logout i, .action-btn.logout span {
+             color: var(--danger);
+        }
+        .action-btn.logout:hover {
+            background-color: rgba(248, 81, 73, 0.1);
+            box-shadow: 0 0 20px rgba(248, 81, 73, 0.2);
         }
         .notification {
             position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 2000;
@@ -160,46 +140,27 @@
         .notification.show { transform: translateY(0); }
         .notification i { font-size: 1.25rem; }
         .grid { display: grid; gap: 1.5rem; }
-        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
         .grid-4 { grid-template-columns: repeat(4, 1fr); }
         @media (max-width: 1200px) {
-            .grid-4 { grid-template-columns: repeat(3, 1fr); }
-        }
-        @media (max-width: 992px) {
-            #sidebar { display: none; }
-            #main-content { margin-right: 0; width: 100%; }
-            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 768px) {
-            .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .grid-4 { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <aside id="sidebar">
-        <div class="profile-section">
+    <div id="main-content">
+        <header class="profile-card">
             <h2 id="profileHeadName">جار التحميل...</h2>
             <p id="profileCountryName">جار التحميل...</p>
             <div class="user-id-wrapper">
                 <span id="profileUserId">...</span>
             </div>
-        </div>
-        <nav class="nav-menu flex flex-col flex-grow">
-            <a href="#"><i class="fas fa-home"></i> <span>الرئيسية</span></a>
-            <a href="economic_store.html"><i class="fas fa-landmark"></i> <span>الاستثمارات الوطنية</span></a>
-            <a href="tanks_store.html"><i class="fa-solid fa-shield-halved"></i> <span>القوات البرية</span></a>
-            <a href="aircraft_store.html"><i class="fas fa-paper-plane"></i> <span>القوات الجوية</span></a>
-            <a href="world.html"><i class="fas fa-crosshairs"></i> <span>الأسلحة الاستراتيجية</span></a>
-            <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>تسجيل الخروج</span></button>
-        </nav>
-    </aside>
-
-    <div id="main-content">
-        <header class="mb-8">
-            <h1 class="text-3xl font-bold">ملخص الأداء</h1>
         </header>
         
-        <section class="grid grid-3 mb-8">
+        <section class="grid grid-4 mb-8">
             <div class="stat-card">
                 <div class="header"><i class="fas fa-wallet" style="color: var(--warning);"></i> <span>الخزينة العامة</span></div>
                 <p id="balance" class="value">...</p>
@@ -208,7 +169,15 @@
                 <div class="header"><i class="fas fa-hand-holding-dollar" style="color: var(--success);"></i> <span>الدخل اليومي</span></div>
                 <p id="dailyIncome" class="value">...</p>
             </div>
+             <div class="stat-card">
+                <div class="header"><i class="fas fa-smile" style="color: var(--primary);"></i> <span>معنويات الشعب</span></div>
+                <p id="morale" class="value">... %</p>
+            </div>
             <div class="stat-card">
+                <div class="header"><i class="fas fa-clock" style="color: var(--text-secondary);"></i> <span>الدخل القادم بعد</span></div>
+                <p id="incomeTimer" class="value" style="font-size: 1.5rem; letter-spacing: 2px;">...</p>
+            </div>
+            <div class="stat-card col-span-2">
                 <div class="header"><i class="fas fa-fire" style="color: var(--danger);"></i> <span>القوة العسكرية</span></div>
                 <p id="militaryPower" class="value">...</p>
             </div>
@@ -217,24 +186,36 @@
         <section class="mb-8">
             <h2 class="section-header">الأصول الوطنية</h2>
             <div id="ownedAssets" class="grid grid-4">
-                <p class="text-text-secondary col-span-full">لا توجد أصول حالياً</p>
+                <p class="text-secondary col-span-full">لا توجد أصول مسجلة حالياً</p>
             </div>
         </section>
         
-        <section>
+        <section class="mb-8">
             <h2 class="section-header">الوصول السريع للمتاجر</h2>
             <div class="grid grid-4">
-                <button class="store-btn" onclick="navigateTo('economic_store.html')">
+                <button class="action-btn" onclick="navigateTo('economic_store.html')">
                     <i class="fas fa-landmark"></i> <span>الاستثمارات</span>
                 </button>
-                <button class="store-btn" onclick="navigateTo('tanks_store.html')">
+                <button class="action-btn" onclick="navigateTo('tanks_store.html')">
                     <i class="fa-solid fa-shield-halved"></i> <span>البرية</span>
                 </button>
-                <button class="store-btn" onclick="navigateTo('aircraft_store.html')">
+                <button class="action-btn" onclick="navigateTo('aircraft_store.html')">
                     <i class="fas fa-paper-plane"></i> <span>الجوية</span>
                 </button>
-                <button class="store-btn" onclick="navigateTo('missiles_store.html')">
+                <button class="action-btn" onclick="navigateTo('missiles_store.html')">
                     <i class="fas fa-crosshairs"></i> <span>الاستراتيجية</span>
+                </button>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-header">الإدارة العامة</h2>
+            <div class="grid grid-4">
+                 <button class="action-btn" onclick="navigateTo('people_management.html')">
+                    <i class="fas fa-users"></i> <span>إدارة الشعب</span>
+                </button>
+                 <button class="action-btn logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> <span>تسجيل الخروج</span>
                 </button>
             </div>
         </section>
@@ -251,21 +232,23 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
     <script>
         function showNotification(message, type = 'info') {
-            const notification = document.getElementById('notification');
-            const msgElem = document.getElementById('notificationMessage');
-            const iconElem = document.getElementById('notificationIcon');
-            if (!notification || !msgElem || !iconElem) return;
+            const el = {
+                notification: document.getElementById('notification'),
+                msg: document.getElementById('notificationMessage'),
+                icon: document.getElementById('notificationIcon')
+            };
+            if (!el.notification || !el.msg || !el.icon) return;
 
-            const icons = { success: 'fas fa-check-circle', error: 'fas fa-times-circle', info: 'fas fa-info-circle' };
-            const colors = { success: 'var(--success)', error: 'var(--danger)', info: 'var(--primary)' };
+            const styles = { success: { icon: 'fas fa-check-circle', color: 'var(--success)' }, error: { icon: 'fas fa-times-circle', color: 'var(--danger)' }, info: { icon: 'fas fa-info-circle', color: 'var(--primary)' } };
+            const style = styles[type] || styles.info;
             
-            notification.style.borderTopColor = colors[type] || colors.info;
-            iconElem.className = icons[type] || icons.info;
-            iconElem.style.color = colors[type] || colors.info;
-            msgElem.textContent = message;
-            notification.classList.add('show');
+            el.notification.style.borderTopColor = style.color;
+            el.icon.className = `fas ${style.icon}`;
+            el.icon.style.color = style.color;
+            el.msg.textContent = message;
+            el.notification.classList.add('show');
 
-            setTimeout(() => notification.classList.remove('show'), 4000);
+            setTimeout(() => el.notification.classList.remove('show'), 4000);
         }
         
         document.addEventListener('DOMContentLoaded', () => {
@@ -279,9 +262,7 @@
                 appId: "1:1012470944135:web:353bd44c8f5f7d8dcdc322"
             };
 
-            try {
-                firebase.initializeApp(firebaseConfig);
-            } catch (e) {
+            try { firebase.initializeApp(firebaseConfig); } catch (e) {
                 document.body.innerHTML = `<div style="color: red; text-align: center; margin-top: 50px;">خطأ فادح في تهيئة التطبيق.</div>`;
                 return;
             }
@@ -291,9 +272,7 @@
             const database = firebase.database();
 
             document.getElementById('logoutBtn').addEventListener('click', () => {
-                auth.signOut().then(() => {
-                    window.location.href = 'index.html';
-                });
+                auth.signOut().then(() => { window.location.href = 'index.html'; });
             });
             
             const ASSET_DEFINITIONS = {
@@ -303,27 +282,56 @@
                 'كتيبة_الهجومية_الجوية': { value: 12000, type: 'عسكري' }, 'كتيبة_المدرعات': { value: 14000, type: 'عسكري' },
                 'كتيبة_النخبة_الخاصة': { value: 25000, type: 'عسكري' }, 'طائرة_مقاتلة': { value: 35000, type: 'عسكري' },
                 'طائرة_قاذفة': { value: 60000, type: 'عسكري' }, 'صاروخ_باليستي': { value: 80000, type: 'عسكري' },
-                'صاروخ_كروز': { value: 45000, type: 'عسكري' }, 'T90': { value: 15000, type: 'عسكري' },
+                'صاروخ_كروز': { value: 45000, type: 'عسكري' }, 'T-90': { value: 15000, type: 'عسكري' },
                 'Abrams': { value: 19000, type: 'عسكري' }, 'Leopard2': { value: 16500, type: 'عسكري' },
                 'Merkava': { value: 15500, type: 'عسكري' }, 'Challenger2': { value: 18000, type: 'عسكري' },
             };
             
-            function formatNumber(num) {
-                return num.toLocaleString('en-US');
+            let incomeCountdownInterval;
+            
+            function formatNumber(num) { return num.toLocaleString('en-US'); }
+
+            function startIncomeTimer() {
+                if (incomeCountdownInterval) clearInterval(incomeCountdownInterval);
+
+                incomeCountdownInterval = setInterval(() => {
+                    const now = new Date();
+                    const algeriaTimeOffset = 1; 
+                    const nowUTC = now.getTime() + (now.getTimezoneOffset() * 60000);
+                    const nowAlgeria = new Date(nowUTC + (3600000 * algeriaTimeOffset));
+
+                    let nextIncomeTime = new Date(nowAlgeria);
+                    nextIncomeTime.setHours(12, 0, 0, 0);
+
+                    if (nowAlgeria.getTime() > nextIncomeTime.getTime()) {
+                        nextIncomeTime.setDate(nextIncomeTime.getDate() + 1);
+                    }
+                    
+                    const distance = nextIncomeTime - nowAlgeria;
+                    
+                    const hours = Math.floor(distance / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    
+                    document.getElementById('incomeTimer').textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                }, 1000);
             }
 
             function updateUI(gameData) {
-                const { balance = 0, dailyIncome = 0, militaryPower = 0, assets = {} } = gameData;
+                const { balance = 0, dailyIncome = 0, militaryPower = 0, assets = {}, morale = 75 } = gameData;
                 document.getElementById('balance').textContent = `${formatNumber(balance)} $`;
                 document.getElementById('dailyIncome').textContent = `${formatNumber(dailyIncome)} $`;
                 document.getElementById('militaryPower').textContent = formatNumber(militaryPower);
+                document.getElementById('morale').textContent = `${Math.floor(morale)} %`;
                 const ownedAssetsDiv = document.getElementById('ownedAssets');
                 ownedAssetsDiv.innerHTML = '';
-                if (Object.keys(assets).length === 0) {
+                const ownedAssets = Object.keys(assets);
+                if (ownedAssets.length === 0) {
                     ownedAssetsDiv.innerHTML = `<p class="text-secondary col-span-full">لا توجد أصول مسجلة حالياً</p>`;
                     return;
                 }
-                for (const [assetName, count] of Object.entries(assets)) {
+                ownedAssets.forEach(assetName => {
+                    const count = assets[assetName];
                     const assetDef = ASSET_DEFINITIONS[assetName];
                     if (assetDef) {
                         let displayValue = '';
@@ -339,25 +347,50 @@
                                 ${displayValue}
                             </div>`;
                     }
-                }
+                });
             }
 
             async function checkAndUpdateDailyIncome(userRef, gameData) {
                 const now = new Date();
-                const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())).toISOString().split('T')[0];
+                const algeriaTimeOffset = 1;
+                const nowUTC = now.getTime() + (now.getTimezoneOffset() * 60000);
+                const nowAlgeria = new Date(nowUTC + (3600000 * algeriaTimeOffset));
+                
+                const todayAlgeria = nowAlgeria.toISOString().split('T')[0];
                 const lastClaimDate = gameData.lastClaimDate || "1970-01-01";
-                if (todayUTC > lastClaimDate) {
+                
+                if (todayAlgeria > lastClaimDate && nowAlgeria.getHours() >= 12) {
                     const income = gameData.dailyIncome || 0;
                     if (income > 0) {
                         const newBalance = (gameData.balance || 0) + income;
-                        await userRef.update({ balance: newBalance, lastClaimDate: todayUTC });
+                        await userRef.update({ balance: newBalance, lastClaimDate: todayAlgeria });
                         gameData.balance = newBalance;
-                        gameData.lastClaimDate = todayUTC;
                         showNotification(`تمت إضافة دخلك اليومي البالغ ${formatNumber(income)} $`, 'success');
                     } else {
-                         await userRef.update({ lastClaimDate: todayUTC });
-                         gameData.lastClaimDate = todayUTC;
+                         await userRef.update({ lastClaimDate: todayAlgeria });
                     }
+                     gameData.lastClaimDate = todayAlgeria;
+                }
+                return gameData;
+            }
+
+            async function manageMorale(userRef, gameData) {
+                const now = new Date().getTime();
+                const oneHour = 60 * 60 * 1000;
+                const lastMoraleUpdate = gameData.lastMoraleUpdate || now;
+                const timePassed = now - lastMoraleUpdate;
+
+                if (timePassed >= oneHour) {
+                    const hoursPassed = Math.floor(timePassed / oneHour);
+                    let newMorale = (gameData.morale || 75) - hoursPassed; 
+                    if (newMorale < 0) newMorale = 0;
+
+                    await userRef.update({
+                        morale: newMorale,
+                        lastMoraleUpdate: now
+                    });
+                    gameData.morale = newMorale;
+                    gameData.lastMoraleUpdate = now;
                 }
                 return gameData;
             }
@@ -383,14 +416,22 @@
                 let gameData;
 
                 if (!gameDataSnapshot.exists()) {
-                    gameData = { balance: 100000000, assets: {}, dailyIncome: 0, militaryPower: 0, lastClaimDate: "1970-01-01" };
+                    const initialMorale = Math.floor(Math.random() * (85 - 65 + 1)) + 65; 
+                    gameData = { balance: 100000000, assets: {}, dailyIncome: 0, militaryPower: 0, lastClaimDate: "1970-01-01", morale: initialMorale, lastMoraleUpdate: new Date().getTime() };
                     await rtdbUserRef.set(gameData);
                 } else {
                     gameData = gameDataSnapshot.val();
+                    if (gameData.morale === undefined) {
+                        gameData.morale = Math.floor(Math.random() * (85 - 65 + 1)) + 65;
+                        gameData.lastMoraleUpdate = new Date().getTime();
+                        await rtdbUserRef.update({ morale: gameData.morale, lastMoraleUpdate: gameData.lastMoraleUpdate });
+                    }
                 }
 
-                const updatedGameData = await checkAndUpdateDailyIncome(rtdbUserRef, gameData);
-                updateUI(updatedGameData);
+                gameData = await checkAndUpdateDailyIncome(rtdbUserRef, gameData);
+                gameData = await manageMorale(rtdbUserRef, gameData);
+                updateUI(gameData);
+                startIncomeTimer();
             }
             
             window.navigateTo = (url) => { window.location.href = url; };
