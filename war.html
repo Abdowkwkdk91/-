@@ -269,9 +269,9 @@
         const CLARIFAI_MODEL_ID = "gpt-oss-120b";
         const PROXY_URL = 'https://corsproxy.io/?'; 
         const ATTACK_COOLDOWN_MS = 30 * 60 * 1000; // 30 دقيقة (نصف ساعة)
-        const DEFENSE_WINDOW_MS = 30 * 60 * 1000; // 30 دقيقة للرد الدفاعي - **تحديث مطلوب**
-        const MIN_POWER_TO_ATTACK = 20000; // الحد الأدنى لقوة الهدف لكي يمكن مهاجمته - **تحديث مطلوب**
-        const LOOT_PERCENTAGE = 0.15; // 15% من رصيد المدافع - **تحديث مطلوب**
+        const DEFENSE_WINDOW_MS = 30 * 60 * 1000; // 30 دقيقة للرد الدفاعي
+        const MIN_POWER_TO_ATTACK = 20000; // الحد الأدنى لقوة الهدف لكي يمكن مهاجمته
+        const LOOT_PERCENTAGE = 0.15; // 15% من رصيد المدافع
 
         const firebaseConfig = {
             apiKey: "AIzaSyDtj_AsssLYm7ZZpgFeUTqYNCrAUevOprs", 
@@ -413,6 +413,52 @@
             };
         }
         
+        // ** دالة تعبئة قائمة الدول المستهدفة وعرض معلومات الهدف**
+        async function updateDefenderSelect(currentUID) {
+            const defenderSelect = document.getElementById('defenderSelect');
+            const defenderTargetInfo = document.getElementById('defenderTargetInfo');
+            defenderSelect.innerHTML = '<option value="">-- اختر دولة مستهدفة --</option>';
+            
+            // استخدام البيانات التي تم جلبها وتخزينها في الدالة authenticatePlayer
+            for (const uid in allUsersData) {
+                const user = allUsersData[uid];
+                const power = user.totalPower || 0;
+                
+                // الشرط: ليست دولتك، لديه اسم دولة، وقوته أكبر من الحد الأدنى للهجوم
+                if (uid !== currentUID && user.country && power >= MIN_POWER_TO_ATTACK) {
+                    defenderSelect.innerHTML += `
+                        <option value="${uid}" data-power="${power}" data-morale="${user.morale}">
+                            ${user.country} (القوة: ${formatNumber(power)})
+                        </option>
+                    `;
+                }
+            }
+            
+            // إضافة مستمع الحدث لتحديث معلومات الهدف عند الاختيار
+            defenderSelect.addEventListener('change', (e) => {
+                const selectedOption = defenderSelect.options[defenderSelect.selectedIndex];
+                if (selectedOption.value) {
+                    const power = selectedOption.getAttribute('data-power');
+                    const morale = selectedOption.getAttribute('data-morale');
+                    const targetUID = selectedOption.value;
+                    const targetData = allUsersData[targetUID];
+                    
+                    defenderTargetInfo.innerHTML = `
+                        <p><span class="font-bold text-danger">الهدف:</span> ${targetData.headName} (${targetData.country})</p>
+                        <p><span class="font-bold text-warning">القوة العسكرية المرصودة:</span> ${formatNumber(parseInt(power))} وحدة</p>
+                        <p><span class="font-bold text-primary">المعنويات العامة:</span> ${morale}%</p>
+                    `;
+                    // تفعيل زر التأكيد
+                    document.getElementById('confirmAttackBtn').disabled = false;
+                } else {
+                    defenderTargetInfo.innerHTML = 'اختر هدفاً لعرض معلوماته المتاحة للرصد.';
+                    // تعطيل زر التأكيد
+                    document.getElementById('confirmAttackBtn').disabled = true;
+                }
+                document.getElementById('startAttackBtn').style.display = 'none'; // إخفاء زر الإطلاق حتى التأكيد مرة أخرى
+            });
+        }
+        
         // **دالة لإنشاء مدخلات الأصول (تستخدم للهجوم والدفاع والدفاع الافتراضي)**
         function createAssetInputs(assets, playerId, targetContainerId, isDefaultDefense = false, initialDedicatedAssets = {}) {
             const controlDiv = document.getElementById(targetContainerId);
@@ -489,7 +535,7 @@
 
 
         async function fetchWarSimulation(fullPrompt) {
-            if (CLARIFAI_PAT === "YOUR_CLARIFAI_PAT_HERE") {
+            if (CLARIFAI_PAT === "YOUR_CLARIFAI_PAT_HERE" || CLARIFAI_PAT === "") {
                 throw new Error("الرجاء إدخال مفتاح Clarifai PAT الخاص بك لتشغيل المحاكاة.");
             }
             const MODEL_VERSION_ID = "b3c129d719144dd49f4cb8cb96585223";
