@@ -214,10 +214,10 @@
                  <button class="action-btn" onclick="navigateTo('people_management.html')">
                     <i class="fas fa-users"></i> <span>إدارة الشعب</span>
                 </button>
-                 <button class="action-btn logout" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> <span>تسجيل الخروج</span>
+                 <button class="action-btn" onclick="navigateTo('war.html')">
+                    <i class="fas fa-helmet-safety"></i> <span>ساحة الحرب</span>
                 </button>
-            </div>
+                </div>
         </section>
     </div>
 
@@ -271,9 +271,7 @@
             const firestore = firebase.firestore();
             const database = firebase.database();
 
-            document.getElementById('logoutBtn').addEventListener('click', () => {
-                auth.signOut().then(() => { window.location.href = 'index.html'; });
-            });
+            // *** تم حذف معالج حدث تسجيل الخروج هنا ***
             
             const ASSET_DEFINITIONS = {
                 'منجم_الذهب': { value: 9000000, type: 'اقتصادي' }, 'منجم_الماس': { value: 16000000, type: 'اقتصادي' },
