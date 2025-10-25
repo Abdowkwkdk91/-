@@ -12,29 +12,29 @@
         :root {
             --background: #0D1117; 
             --surface: #161B22; 
-            --card-bg: #21262D; /* لون جديد للبطاقات */
+            --card-bg: #21262D; 
             --border: #30363D;
-            --primary: #58A6FF; /* أزرق نيون */
+            --primary: #58A6FF; 
             --text-primary: #C9D1D9;
             --text-secondary: #8B949E;
             --success: #3FB950;
-            --danger: #F85149; /* أحمر حاد */
-            --warning: #FFD35B; /* أصفر ذهبي */
+            --danger: #F85149; 
+            --warning: #FFD35B; 
         }
         * { font-family: 'Almarai', sans-serif; box-sizing: border-box; }
         body { 
             background-color: var(--background); 
             color: var(--text-primary); 
-            padding: 10px; /* تقليل الحشو للهواتف */
-            overflow-x: hidden; /* منع شريط التمرير الأفقي */
+            padding: 10px; 
+            overflow-x: hidden; 
         }
         .container { 
-            max-width: 100%; /* تجاوز 1200px غير مناسب للهاتف */
+            max-width: 100%; 
             margin: 0 auto; 
             background: var(--surface); 
             border: 1px solid var(--border); 
             border-radius: 1rem; 
-            padding: 1.5rem; /* حشو مناسب للهواتف */
+            padding: 1.5rem; 
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4); 
         }
         h1 { color: var(--primary); font-size: 1.75rem; font-weight: 800; margin-bottom: 1.5rem; text-align: center; border-bottom: 3px solid var(--primary); padding-bottom: 0.75rem; }
@@ -65,7 +65,7 @@
         .dedicated-assets-group h3 { font-weight: bold; color: var(--warning); margin-top: 1rem; margin-bottom: 10px; border-bottom: 1px dotted var(--border); padding-bottom: 5px; }
         .asset-control { 
             display: flex; 
-            flex-direction: column; /* ترتيب عمودي على الهاتف */
+            flex-direction: column; 
             gap: 5px; 
             margin-bottom: 12px; 
             padding: 5px 0;
@@ -75,7 +75,7 @@
             margin: 0; 
             font-size: 0.9rem; 
             font-weight: 600;
-            color: var(--primary); /* تمييز اسم الأصل */
+            color: var(--primary); 
             flex-grow: 1; 
             min-width: unset; 
         }
@@ -85,7 +85,8 @@
             gap: 10px;
             width: 100%;
         }
-        .asset-control input[type="range"] { flex-grow: 1; margin: 0; padding: 0.3rem 0; background: transparent; }
+        /* تحسين زر التمرير ليشعر بالراحة على اللمس */
+        .asset-control input[type="range"] { flex-grow: 1; margin: 0; padding: 0.3rem 0; background: transparent; height: 30px; cursor: pointer; } 
         .asset-control input[type="range"]::-webkit-slider-thumb { background: var(--danger); }
         .asset-count { font-size: 1rem; color: var(--warning); width: 60px; text-align: right; font-weight: bold; }
         .asset-max-count { font-size: 0.85rem; color: var(--text-secondary); width: 40px; text-align: left; }
@@ -107,7 +108,7 @@
             z-index: 3000; 
             display: none; 
             justify-content: center; 
-            align-items: flex-start; /* يبدأ من الأعلى */
+            align-items: flex-start; 
             padding-top: 20px;
             overflow-y: auto;
         }
@@ -115,12 +116,26 @@
             background: var(--surface); 
             padding: 1.5rem; 
             border-radius: 1rem; 
-            max-width: 95%; /* أقصى عرض على الموبايل */
+            max-width: 95%; 
             width: 800px; 
             border: 2px solid var(--danger); 
-            margin-bottom: 20px; /* مسافة للأسفل */
+            margin-bottom: 20px; 
         }
-        
+
+        /* War History Styles */
+        .war-history-item { 
+            border-bottom: 1px solid #3e4c5b; 
+            padding: 10px 0; 
+            margin-bottom: 5px; 
+        }
+        .war-history-item .win { color: var(--success); font-weight: bold; }
+        .war-history-item .loss { color: var(--danger); font-weight: bold; }
+        .war-history-item .draw { color: var(--warning); font-weight: bold; }
+        .scenario-content { 
+            max-height: 400px; 
+            overflow-y: auto;
+            white-space: pre-wrap; /* للحفاظ على تنسيق النص من AI */
+        }
     </style>
 </head>
 <body>
@@ -147,6 +162,25 @@
             </div>
         </section>
         
+        <section id="defaultDefenseSection" class="section-box" style="display:none;">
+            <h2 style="color: var(--success);"><i class="fas fa-tools"></i> إعداد الخطة الدفاعية الافتراضية المسبقة</h2>
+            <p class="text-sm text-secondary mb-3">سيتم استخدام هذه الخطة وأصولها المخصصة تلقائيًا إذا لم ترد القيادة خلال 30 دقيقة من الهجوم.</p>
+            
+            <div id="defaultDefenderAssetsControl" class="dedicated-assets-group mt-4 p-3 bg-green-900/30 rounded-lg border border-success/50">
+                <h3><i class="fas fa-shield-virus"></i> تخصيص الأصول للدفاع الافتراضي</h3>
+            </div>
+            
+            <label for="defaultDefenderPlan" class="mt-4 block mb-2 text-sm"><i class="fas fa-book" style="color: var(--success);"></i> خطة الدفاع الافتراضية:</label>
+            <select id="defaultDefenderPlan" class="p-3"></select>
+            
+            <div id="currentDefaultDefenseInfo" class="bg-gray-700/50 p-3 rounded-lg mt-3 text-sm">
+                <i class="fas fa-info-circle text-primary"></i> الدفاع الافتراضي الحالي: <span id="defaultDefensePlanName" class="font-bold text-warning">لا توجد خطة مُعَدَّة.</span>
+            </div>
+            
+            <button id="saveDefaultDefenseBtn" class="w-full mt-4 py-3 btn btn-success hover:bg-green-700 font-bold rounded-lg transition duration-200">
+                <i class="fas fa-save"></i> حفظ إعدادات الدفاع الافتراضي
+            </button>
+        </section>
         <section id="notificationsSection" class="section-box" style="display:none;">
             <h2><i class="fas fa-bell text-danger"></i> إشعارات الهجوم الوارد</h2>
             <div id="incomingAttacks" class="h-40 overflow-y-auto">
@@ -169,7 +203,7 @@
             <select id="attackerPlan" class="p-3"></select>
             
             <button id="confirmAttackBtn" class="w-full mt-6 py-3 btn btn-warning hover:bg-yellow-600 font-bold rounded-lg transition duration-200" disabled>
-                <i class="fas fa-user-tie"></i> موافقة الجنرال/القيادة (تأكيد الخطة)
+                <i class="fas fa-user-tie"></i> موافقة القيادة (تأكيد الخطة)
             </button>
             <button id="startAttackBtn" class="w-full mt-3 py-3 btn btn-danger hover:bg-red-700 font-bold rounded-lg transition duration-200" style="display:none;" disabled>
                 <i class="fas fa-bomb"></i> إرسال الهجوم الآن!
@@ -179,7 +213,7 @@
         
         <section id="warHistorySection" class="section-box" style="display:none;">
             <h2 style="color: var(--primary);"><i class="fas fa-scroll"></i> سجل تاريخ الحروب (فضيحة علنية)</h2>
-            <div id="warHistoryList" class="h-64 overflow-y-auto p-2 bg-[#1E2734] rounded-lg border border-gray-600">
+            <div id="warHistoryList" class="h-96 overflow-y-auto p-2 bg-[#1E2734] rounded-lg border border-gray-600">
                 <p id="noWarHistory">لا توجد سجلات حروب حديثة.</p>
             </div>
         </section>
@@ -235,6 +269,9 @@
         const CLARIFAI_MODEL_ID = "gpt-oss-120b";
         const PROXY_URL = 'https://corsproxy.io/?'; 
         const ATTACK_COOLDOWN_MS = 30 * 60 * 1000; // 30 دقيقة (نصف ساعة)
+        const DEFENSE_WINDOW_MS = 30 * 60 * 1000; // 30 دقيقة للرد الدفاعي - **تحديث مطلوب**
+        const MIN_POWER_TO_ATTACK = 20000; // الحد الأدنى لقوة الهدف لكي يمكن مهاجمته - **تحديث مطلوب**
+        const LOOT_PERCENTAGE = 0.15; // 15% من رصيد المدافع - **تحديث مطلوب**
 
         const firebaseConfig = {
             apiKey: "AIzaSyDtj_AsssLYm7ZZpgFeUTqYNCrAUevOprs", 
@@ -273,6 +310,7 @@
 
         let allUsersData = {}; 
         let currentPlayer = null; 
+        let defenderStats = {}; // لتخزين إحصائيات المدافع الحالية أثناء الدفاع
         
         firebase.initializeApp(firebaseConfig);
         const firestore = firebase.firestore();
@@ -370,15 +408,15 @@
                 morale: gameData.morale || 75,
                 militaryAssetsHTML: assetsListHTML || '<div class="text-secondary p-2">لا توجد أصول.</div>',
                 militaryAssetsDetails: militaryAssetsDetails,
-                lastAttackTime: gameData.lastAttackTime || 0
+                lastAttackTime: gameData.lastAttackTime || 0,
+                defaultDefense: gameData.defaultDefense || { planName: '', dedicatedAssets: {} }
             };
         }
-
-        function createAssetInputs(assets, playerId, readonly = false) {
-            let html = '';
-            const controlDiv = document.getElementById(`${playerId}AssetsControl`);
-            
-            controlDiv.innerHTML = `<h3><i class="fas fa-wrench"></i> ${playerId === 'attacker' ? 'تخصيص الأصول للهجوم' : 'تخصيص الأصول للدفاع'}</h3>`; 
+        
+        // **دالة لإنشاء مدخلات الأصول (تستخدم للهجوم والدفاع والدفاع الافتراضي)**
+        function createAssetInputs(assets, playerId, targetContainerId, isDefaultDefense = false, initialDedicatedAssets = {}) {
+            const controlDiv = document.getElementById(targetContainerId);
+            controlDiv.innerHTML = `<h3><i class="fas fa-wrench"></i> ${playerId === 'attacker' ? 'تخصيص الأصول للهجوم' : (isDefaultDefense ? 'تخصيص الأصول للدفاع الافتراضي' : 'تخصيص الأصول للدفاع')}</h3>`; 
 
             const militaryAssets = Object.keys(assets).filter(name => ASSET_DEFINITIONS[name]?.type === 'Military' && assets[name] > 0);
 
@@ -386,21 +424,29 @@
                 controlDiv.innerHTML += `<p style="color: var(--text-secondary); font-size: 0.9rem;">لا توجد أصول عسكرية متاحة للتخصيص.</p>`;
                 return;
             }
-
+            
+            let html = '';
             militaryAssets.forEach(name => {
                 const count = assets[name];
                 const inputId = `${playerId}Asset_${name}`;
                 const displayId = `${playerId}AssetDisplay_${name}`;
                 const max = count;
                 
-                const initialValue = (playerId === 'attacker') ? 0 : count;
+                let initialValue;
+                if (isDefaultDefense && initialDedicatedAssets[name]) {
+                    initialValue = Math.min(initialDedicatedAssets[name], max);
+                } else if (playerId === 'attacker') {
+                    initialValue = 0;
+                } else {
+                    initialValue = count; // دفاع فوري يخصص كل شيء بشكل افتراضي
+                }
+
                 
-                // تم تحسين هيكل التحكم في الأصول ليتناسب مع الهاتف
                 html += `
                     <div class="asset-control">
                         <label for="${inputId}">${name.replace(/_/g, ' ')}:</label>
                         <div class="asset-range-container">
-                            <input id="${inputId}" type="range" min="0" max="${max}" value="${initialValue}" data-asset-name="${name}" data-max-count="${max}" ${readonly ? 'readonly' : ''}>
+                            <input id="${inputId}" type="range" min="0" max="${max}" value="${initialValue}" data-asset-name="${name}" data-max-count="${max}">
                             <span id="${displayId}" class="asset-count">${formatNumber(initialValue)}</span>
                             <span class="asset-max-count">/ ${formatNumber(max)}</span>
                         </div>
@@ -422,9 +468,27 @@
                 });
             });
         }
+        
+        // ** دالة لحساب القوة المخصصة من المدخلات **
+        function getDedicatedAssetsAndPower(playerId, controlDivId) {
+            const inputs = document.querySelectorAll(`#${controlDivId} input[type="range"]`);
+            const dedicatedAssets = {};
+            let totalPowerUsed = 0;
+            
+            inputs.forEach(input => {
+                const name = input.getAttribute('data-asset-name');
+                const value = parseInt(input.value) || 0;
+                
+                if (value > 0) {
+                    dedicatedAssets[name] = value;
+                    totalPowerUsed += value * (ASSET_DEFINITIONS[name]?.value || ASSET_DEFINITIONS.DEFAULT_MILITARY_POWER);
+                }
+            });
+            return { dedicatedAssets, totalPowerUsed };
+        }
+
 
         async function fetchWarSimulation(fullPrompt) {
-             // ... (نفس منطق Clarifai API)
             if (CLARIFAI_PAT === "YOUR_CLARIFAI_PAT_HERE") {
                 throw new Error("الرجاء إدخال مفتاح Clarifai PAT الخاص بك لتشغيل المحاكاة.");
             }
@@ -458,82 +522,69 @@
         }
         
         // **********************************************
-        // منطق واجهة الهجوم 
+        // منطق واجهة الهجوم والدفاع الافتراضي 
         // **********************************************
 
-        function populateAttackerOptions(stats) {
-            // ... (نفس منطق populateAttackerOptions السابق)
-             // تحديث بيانات اللاعب الحالي (المهاجم)
+        function populateAttackerAndDefaultDefenseOptions(stats) {
+            defenderStats = stats; // تحديث إحصائيات المدافع الحالية
+            
             document.getElementById('totalPower').textContent = formatNumber(stats.totalPower);
             document.getElementById('balance').textContent = formatNumber(stats.currentBalance);
             document.getElementById('morale').textContent = stats.morale;
             document.getElementById('assetsList').innerHTML = stats.militaryAssetsHTML;
             
-            // إعداد شرائط التمرير للأصول العسكرية المتاحة للهجوم
-            createAssetInputs(stats.militaryAssetsDetails, 'attacker');
+            // 1. إعداد واجهة الهجوم
+            createAssetInputs(stats.militaryAssetsDetails, 'attacker', 'attackerAssetsControl', false, {});
             
-            // إعداد خيارات خطة الهجوم
             const attackerPlanSelect = document.getElementById('attackerPlan');
             attackerPlanSelect.innerHTML = '<option value="">-- اختر خطة هجوم --</option>';
+            // 2. إعداد واجهة الدفاع الافتراضي
+            const defaultDefenderPlanSelect = document.getElementById('defaultDefenderPlan');
+            defaultDefenderPlanSelect.innerHTML = '<option value="">-- اختر خطة دفاع افتراضية --</option>';
+            
             for (const key in WAR_PLANS) {
-                if (WAR_PLANS[key].type === 'Attack') {
-                    const plan = WAR_PLANS[key];
+                const plan = WAR_PLANS[key];
+                if (plan.type === 'Attack') {
                     attackerPlanSelect.innerHTML += `<option value="${plan.desc}" data-plan-name="${plan.name}">${plan.name}</option>`;
+                } else if (plan.type === 'Defense') {
+                    defaultDefenderPlanSelect.innerHTML += `<option value="${plan.desc}" data-plan-name="${plan.name}">${plan.name}</option>`;
                 }
             }
+            
+            // 3. عرض حالة الدفاع الافتراضي الحالية
+            const defaultDefense = stats.defaultDefense;
+            const defaultDefenseName = defaultDefense.planName || 'لا توجد خطة مُعَدَّة.';
+            document.getElementById('defaultDefensePlanName').textContent = defaultDefenseName;
+            
+            if (defaultDefense.planName) {
+                defaultDefenderPlanSelect.value = Object.values(WAR_PLANS).find(p => p.name === defaultDefense.planName)?.desc || '';
+            }
+            
+            // 4. إنشاء مدخلات أصول الدفاع الافتراضي بقيمها المخزنة
+            createAssetInputs(stats.militaryAssetsDetails, 'defaultDefender', 'defaultDefenderAssetsControl', true, defaultDefense.dedicatedAssets);
+
         }
         
-        async function updateDefenderSelect(excludeUID) {
-            // ... (نفس منطق updateDefenderSelect السابق)
-             const defenderSelect = document.getElementById('defenderSelect');
-            defenderSelect.innerHTML = '<option value="">-- اختر دولة مستهدفة --</option>';
-            
-            const users = Object.values(allUsersData).filter(user => user.uid !== excludeUID);
-            
-            users.forEach(user => {
-                const option = document.createElement('option');
-                option.value = user.uid;
-                option.textContent = `${user.country} (القوة الكلية: ${formatNumber(user.totalPower)})`;
-                defenderSelect.appendChild(option);
-            });
-            
-            // تحديث معلومات الهدف عند الاختيار
-            defenderSelect.onchange = () => {
-                const uid = defenderSelect.value;
-                const infoDiv = document.getElementById('defenderTargetInfo');
-                if (uid && allUsersData[uid]) {
-                    const target = allUsersData[uid];
-                    infoDiv.innerHTML = `
-                        <p class="font-bold text-lg text-primary">${target.country}</p>
-                        <p>قوة عسكرية مرصودة: <span class="text-danger">${formatNumber(target.totalPower)}</span></p>
-                        <p>معنويات مرصودة: <span class="text-warning">${target.morale}%</span></p>
-                        <p class="text-xs text-white/70 mt-1">المعلومات قد لا تكون دقيقة 100% لكنها تعطي مؤشراً.</p>
-                    `;
-                } else {
-                    infoDiv.innerHTML = 'اختر هدفاً لعرض معلوماته المتاحة للرصد.';
-                }
-            };
-        }
-
         // **********************************************
-        // منطق تطبيق النتائج والمحاكاة (مع تحسين أمني)
+        // منطق تطبيق النتائج والمحاكاة 
         // **********************************************
-        async function applyWarResults(attackerUID, defenderUID, aiResponse, attackerDedicatedAssets, defenderDedicatedAssets) {
-            // ... (نفس منطق applyWarResults السابق)
+        async function applyWarResults(attackerUID, defenderUID, aiResponse, attackerDedicatedAssets, defenderDedicatedAssets, isDefaultDefenseUsed = false) {
+            
             const ATTACKER_COUNTRY = allUsersData[attackerUID]?.country || currentPlayer.country;
             const DEFENDER_COUNTRY = allUsersData[defenderUID]?.country || 'المدافع';
-            const APPLY_BTN = document.getElementById('startSimulationBtn');
-            
-            APPLY_BTN.disabled = true;
             
             let winnerUID = null;
             let winnerCountry = "تعادل";
             
-            const LOSER_LOSS_PERCENT = 0.50; 
+            const LOSER_LOSS_PERCENT = isDefaultDefenseUsed ? 0.65 : 0.50; // خسارة أكبر إذا كان الدفاع افتراضياً
             const WINNER_LOSS_PERCENT = 0.15; 
             const WINNER_BONUS = 15000000; 
-            const LOSER_MORALE_PENALTY = 15;
+            const LOSER_MORALE_PENALTY = isDefaultDefenseUsed ? 20 : 15;
             const WINNER_MORALE_BONUS = 5;
+            
+            let lootAmount = 0;
+            let totalLoserLossValue = 0;
+            let totalWinnerLossValue = 0;
             
             try {
                 // 1. استخلاص الفائز
@@ -556,28 +607,28 @@
                     winnerCountry = DEFENDER_COUNTRY;
                 } 
                 
-                let totalLoserLossValue = 0;
-                let totalWinnerLossValue = 0;
-                
+                // جلب بيانات الطرفين قبل تطبيق الخسائر
+                let attackerData = await fetchGameData(attackerUID);
+                let defenderData = await fetchGameData(defenderUID);
+
                 if (winnerUID !== null) {
                     const loserUID = (winnerUID === attackerUID) ? defenderUID : attackerUID;
                     const LOSER_COUNTRY = (loserUID === attackerUID) ? ATTACKER_COUNTRY : DEFENDER_COUNTRY;
-
-                    // 2. جلب البيانات من RTDB (لتأكيد الأمان)
-                    let loserData = await fetchGameData(loserUID);
-                    let winnerData = await fetchGameData(winnerUID);
                     
                     const loserAssetsUsed = (loserUID === attackerUID) ? attackerDedicatedAssets : defenderDedicatedAssets;
                     const winnerAssetsUsed = (winnerUID === attackerUID) ? attackerDedicatedAssets : defenderDedicatedAssets;
+                    
+                    const loserCurrentData = (loserUID === attackerUID) ? attackerData : defenderData;
+                    const winnerCurrentData = (winnerUID === attackerUID) ? attackerData : defenderData;
 
-                    let loserAssetsToUpdate = { ...loserData.assets };
-                    let winnerAssetsToUpdate = { ...winnerData.assets };
-
+                    let loserAssetsToUpdate = { ...loserCurrentData.assets };
+                    let winnerAssetsToUpdate = { ...winnerCurrentData.assets };
+                    
                     // تطبيق خسائر المهزوم
                     for (const assetName in loserAssetsUsed) {
                         const usedCount = loserAssetsUsed[assetName];
-                        // ********* التحقق الأمني: لا تخسر أكثر مما لديك فعلاً *********
-                        const maxLoss = loserData.assets[assetName] || 0;
+                        const maxLoss = loserCurrentData.assets[assetName] || 0;
+                        // حساب الخسارة بناءً على النسبة المئوية المحددة
                         const lossCount = Math.min(Math.floor(usedCount * LOSER_LOSS_PERCENT), maxLoss);
                         
                         if (maxLoss > 0) {
@@ -590,8 +641,7 @@
                     // تطبيق خسائر الفائز
                     for (const assetName in winnerAssetsUsed) {
                         const usedCount = winnerAssetsUsed[assetName];
-                        // ********* التحقق الأمني: لا تخسر أكثر مما لديك فعلاً *********
-                        const maxLoss = winnerData.assets[assetName] || 0;
+                        const maxLoss = winnerCurrentData.assets[assetName] || 0;
                         const lossCount = Math.min(Math.floor(usedCount * WINNER_LOSS_PERCENT), maxLoss);
                         
                         if (maxLoss > 0) {
@@ -601,23 +651,41 @@
                         }
                     }
                     
-                    // تحديث قاعدة البيانات (هنا تحدث التغييرات فعلياً)
-                    await database.ref(`users/${winnerUID}`).update({ 
+                    // **حساب الغنيمة (15% من رصيد المدافع فقط إذا كان المهاجم هو الفائز)**
+                    if (winnerUID === attackerUID) {
+                        const defenderBalance = defenderData.balance || 0;
+                        if (defenderBalance > 0) {
+                            lootAmount = Math.floor(defenderBalance * LOOT_PERCENTAGE);
+                        } else {
+                            lootAmount = 0; // حماية الفقر
+                        }
+                    }
+
+                    // تحديث بيانات الفائز
+                    const winnerUpdate = { 
                         assets: winnerAssetsToUpdate, 
-                        balance: (winnerData.balance || 0) + WINNER_BONUS,
-                        morale: Math.min(100, (winnerData.morale || 75) + WINNER_MORALE_BONUS) 
-                    });
-                    await database.ref(`users/${loserUID}`).update({ 
+                        balance: (winnerCurrentData.balance || 0) + WINNER_BONUS + lootAmount, // الغنيمة تضاف هنا
+                        morale: Math.min(100, (winnerCurrentData.morale || 75) + WINNER_MORALE_BONUS) 
+                    };
+                    await database.ref(`users/${winnerUID}`).update(winnerUpdate);
+
+                    // تحديث بيانات الخاسر
+                    const loserUpdate = { 
                         assets: loserAssetsToUpdate, 
-                        morale: Math.max(5, (loserData.morale || 75) - LOSER_MORALE_PENALTY),
-                    });
+                        morale: Math.max(5, (loserCurrentData.morale || 75) - LOSER_MORALE_PENALTY),
+                    };
+                    // إذا كان الخاسر هو المدافع وتم أخذ غنيمة
+                    if (loserUID === defenderUID && lootAmount > 0) {
+                        loserUpdate.balance = Math.max(-100000000, (loserCurrentData.balance || 0) - lootAmount); 
+                    }
+                    await database.ref(`users/${loserUID}`).update(loserUpdate);
                     
-                    showNotification(`تم تطبيق النتائج بنجاح! الفائز: ${winnerCountry}. خسارة ${LOSER_COUNTRY}: ${formatNumber(totalLoserLossValue)} (قيمة الأصول).`, 'success');
+                    showNotification(`تم تطبيق النتائج بنجاح! الفائز: ${winnerCountry}. خسارة ${LOSER_COUNTRY}: ${formatNumber(totalLoserLossValue)} (أصول).`, 'success');
                 } else {
                      showNotification(`تعادل في المعركة. لا خسائر أو مكافآت تُطبق.`, 'info');
                 }
 
-                // تسجيل الحدث (علني)
+                // **تخزين السيناريو الكامل في التاريخ**
                 await logWarHistory({
                     attackerUID, attackerCountry: ATTACKER_COUNTRY,
                     defenderUID, defenderCountry: DEFENDER_COUNTRY,
@@ -626,12 +694,13 @@
                     totalWinnerLossValue: totalWinnerLossValue,
                     totalLoserLossValue: totalLoserLossValue,
                     WINNER_BONUS: winnerUID !== null ? WINNER_BONUS : 0,
+                    lootAmount: lootAmount, 
                     attackerPlan: document.getElementById('defenseModal').dataset.attackerPlanName || 'غير محدد',
-                    defenderPlan: document.getElementById('defenderPlan').options[document.getElementById('defenderPlan').selectedIndex]?.dataset.planName || 'غير محدد'
+                    defenderPlan: document.getElementById('defenseModal').dataset.defenderPlanName || 'غير محدد',
+                    isDefaultDefenseUsed: isDefaultDefenseUsed, // **إضافة جديدة**
+                    scenario: aiResponse 
                 });
                 
-                document.getElementById('startSimulationBtn').disabled = false;
-
             } catch (error) {
                  const outputDiv = document.getElementById('simulationOutput');
                 outputDiv.innerHTML += `<br><div style="color: var(--danger); font-weight: 700;">فشل في تطبيق النتائج الآلي: ${error.message}. لن يتم خصم الخسائر.</div>`;
@@ -642,15 +711,108 @@
                     winnerUID: null, 
                     winnerCountry: 'خطأ', 
                     lossesApplied: false,
-                    error: error.message
+                    error: error.message,
+                    scenario: `خطأ في تطبيق النتائج: ${error.message}`
                 });
-                document.getElementById('startSimulationBtn').disabled = false;
+            }
+        }
+        
+        
+        async function runDefenseSimulation(attackData, notificationKey, defenderPlanName, defenderPlanDesc, defenderDedicatedAssets, isDefaultDefense = false) {
+            
+            const startSimBtn = document.getElementById('startSimulationBtn');
+            const simulationSection = document.getElementById('simulationResultSection');
+            const outputDiv = document.getElementById('simulationOutput');
+            const content = document.getElementById('defenseContent');
+            
+            startSimBtn.disabled = true;
+            startSimBtn.textContent = 'جاري التحكيم...';
+
+            const attackerCountry = attackData.attackerCountry;
+            const defenderCountry = currentPlayer.country;
+            const attackerDedicatedAssets = attackData.dedicatedAssets;
+            
+            
+            // حساب قوة الأصول المخصصة للمدافع (سواء كانت افتراضية أو يدوية)
+            let defenderTotalPowerUsed = 0;
+            let defenderAssetsListForAI = '';
+            for(const name in defenderDedicatedAssets) {
+                const count = defenderDedicatedAssets[name];
+                defenderAssetsListForAI += `${name.replace(/_/g, ' ')}: ${formatNumber(count)} | `;
+                defenderTotalPowerUsed += count * (ASSET_DEFINITIONS[name]?.value || ASSET_DEFINITIONS.DEFAULT_MILITARY_POWER);
+            }
+            
+             // حساب قوة الأصول المخصصة للمهاجم
+            let attackerTotalPowerUsed = 0;
+            let attackerAssetsListForAI = '';
+            const attackerData = allUsersData[attackData.attackerUID] || {};
+            for(const name in attackerDedicatedAssets) {
+                 const count = attackerDedicatedAssets[name];
+                 attackerAssetsListForAI += `${name.replace(/_/g, ' ')}: ${formatNumber(count)} | `;
+                 attackerTotalPowerUsed += count * (ASSET_DEFINITIONS[name]?.value || ASSET_DEFINITIONS.DEFAULT_MILITARY_POWER);
+             }
+
+
+            // بناء موجه الذكاء الاصطناعي
+            const fullPrompt = `
+            أنت محلل استراتيجي وخبير عسكري. نفذ محاكاة حرب واقعية قصيرة جداً وموجزة، مع الالتزام بالصيغ المطلوبة أدناه بدقة. يجب أن يتضمن السيناريو وصفاً واضحاً لنتائج الاشتباك الرئيسية، مع التركيز على الخسائر والتضحيات المادية.
+            
+            **تاريخ ووقت المعركة:** ${getCurrentDateTime()}
+            **حالة الدفاع:** ${isDefaultDefense ? 'آلي (تم استخدام الخطة الدفاعية الافتراضية المسبقة لانتهاء المهلة).' : 'يدوي (تم الرد في الوقت المحدد).'}
+
+            **البلد المهاجم (${attackerCountry}):**
+            - القوة الكلية المتاحة: ${formatNumber(attackerData.totalPower || 0)}
+            - القوة الكلية المخصصة للهجوم: ${formatNumber(attackerTotalPowerUsed)}
+            - الأصول المخصصة للهجوم (نوع وعدد): ${attackerAssetsListForAI.trim() || 'لا توجد أصول مخصصة.'}
+            - خطة الهجوم المعتمدة: ${attackData.planName} (الوصف: ${Object.values(WAR_PLANS).find(p => p.name === attackData.planName)?.desc || 'غير متوفر'})
+            - المعنويات: ${Math.floor(attackerData.morale || 75)}%
+
+            **البلد المدافع (${defenderCountry}):**
+            - القوة الكلية المتاحة: ${formatNumber(defenderStats.totalPower)}
+            - القوة الكلية المخصصة للدفاع: ${formatNumber(defenderTotalPowerUsed)}
+            - الأصول المخصصة للدفاع (نوع وعدد): ${defenderAssetsListForAI.trim() || 'لا توجد أصول مخصصة.'}
+            - خطة الدفاع المعتمدة: ${defenderPlanName} (الوصف: ${defenderPlanDesc})
+            - المعنويات: ${Math.floor(defenderStats.morale)}%
+            
+            **التحليل المطلوب:** قدم سيناريو موجز وواقعي لتطور المعركة. يجب أن يعتمد التحليل على الأصول المخصصة والخطة المتبعة لكل طرف. يجب أن يشير السيناريو إلى مقدار خسائر الأصول التي تكبدها كل طرف بشكل تقريبي (كنسبة مئوية أو وصف) ليقوم النظام بخصمها لاحقاً.
+            
+            **الخلاصة:** بعد نهاية السيناريو، يجب أن تحدد الفائز بشكل قاطع بذكر اسم الدولة أو بكلمة "المهاجم" أو "المدافع" فقط، باستخدام الصيغة التالية **بالضبط ودون أي إضافات**: 
+            الخلاصة: الفائز هو [اسم الدولة أو المهاجم/المدافع]
+            `;
+
+            outputDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري تحليل بيانات المعركة...</div>';
+            simulationSection.style.display = 'block';
+            document.getElementById('defenderOptions').style.display = 'none';
+            
+            // تخزين اسم الخطة لتسجيلها في التاريخ
+            content.dataset.defenderPlanName = defenderPlanName;
+
+            try {
+                const analysis = await fetchWarSimulation(fullPrompt);
+                const formattedOutput = analysis
+                    .replace(/\*\*(.*?)\*\*/g, '<span style="color: var(--danger); font-weight: 700;">$1</span>')
+                    .replace(/\n/g, '<br>');
+
+                outputDiv.innerHTML = formattedOutput;
+                
+                // تطبيق النتائج وحذف الإشعار
+                await applyWarResults(attackData.attackerUID, currentPlayer.uid, analysis, attackerDedicatedAssets, defenderDedicatedAssets, isDefaultDefense);
+                
+                database.ref(`notifications/${currentPlayer.uid}/${notificationKey}`).remove();
+                
+            } catch (error) {
+                outputDiv.innerHTML = `<div style="color: var(--danger); font-weight: 700;">فشل التحكيم: ${error.message}</div>`;
+                showNotification(`خطأ في AI: ${error.message}`, 'error');
+            } finally {
+                 if (startSimBtn) { // فقط إذا كان الرد يدوياً
+                    startSimBtn.disabled = false;
+                    startSimBtn.textContent = 'بدء التحكيم والقتال!';
+                 }
             }
         }
         
         async function handleAttackAlert(notificationKey, attackData) {
-            // ... (نفس منطق handleAttackAlert السابق)
-             const modal = document.getElementById('defenseModal');
+            const modal = document.getElementById('defenseModal');
             const content = document.getElementById('defenseContent');
             const detailsDiv = document.getElementById('attackDetails');
             const defenderPlanSelect = document.getElementById('defenderPlan');
@@ -658,8 +820,56 @@
             const simulationSection = document.getElementById('simulationResultSection');
             const outputDiv = document.getElementById('simulationOutput');
             
-            // تهيئة واجهة الدفاع
-            // **تم تصحيح مشكلة ظهور هذه النافذة على الهاتف بفضل التعديلات في CSS**
+            const attackerCountry = attackData.attackerCountry;
+            const attackerDedicatedAssets = attackData.dedicatedAssets;
+            
+            // **التحقق من انقضاء مهلة الـ 30 دقيقة**
+            const attackTime = attackData.timestamp || Date.now();
+            const timeLimit = attackTime + DEFENSE_WINDOW_MS;
+            const now = Date.now();
+            
+            // جلب بيانات المدافع لتحديثها
+            const currentDefenderData = await fetchGameData(currentPlayer.uid);
+            const defaultDefense = currentDefenderData.defaultDefense || {};
+            const defaultPlanName = defaultDefense.planName;
+            const defaultDedicatedAssets = defaultDefense.dedicatedAssets || {};
+            
+            if (now > timeLimit) {
+                // [المهلة انتهت]
+                modal.style.display = 'block';
+                simulationSection.style.display = 'block';
+                document.getElementById('defenderOptions').style.display = 'none'; 
+                
+                if (defaultPlanName && Object.keys(defaultDedicatedAssets).length > 0) {
+                     // **تحديث: استخدام الخطة الافتراضية**
+                    detailsDiv.innerHTML = `
+                        <h4 class="font-bold text-lg mb-2 text-warning"><i class="fas fa-history"></i> المهلة انتهت!</h4>
+                        <p class="text-white">لم تقم القيادة بالرد في الوقت المحدد. سيتم تنفيذ **الخطة الدفاعية الافتراضية** (${defaultPlanName}) تلقائياً.</p>
+                    `;
+                    outputDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تنفيذ الخطة الدفاعية الافتراضية...';
+                    
+                    const planDesc = Object.values(WAR_PLANS).find(p => p.name === defaultPlanName)?.desc || defaultPlanName;
+                    await runDefenseSimulation(attackData, notificationKey, defaultPlanName, planDesc, defaultDedicatedAssets, true);
+                    
+                } else {
+                    // الحكم بالخسارة الافتراضية لانتهاء المهلة وعدم وجود خطة افتراضية
+                    detailsDiv.innerHTML = `
+                        <h4 class="font-bold text-lg mb-2 text-danger"><i class="fas fa-skull-crossbones"></i> انقضاء مهلة الدفاع!</h4>
+                        <p class="text-warning">لم تقم القيادة باتخاذ إجراء دفاعي خلال 30 دقيقة **ولم يتم إعداد خطة دفاعية افتراضية**. سيتم تطبيق خسائر عالية.</p>
+                    `;
+                    outputDiv.innerHTML = '<i class="fas fa-gavel"></i> الحكم الافتراضي: المدافع خسر لعدم الرد في الوقت المحدد. يتم تطبيق خسارة 80% على المدافع.';
+                    
+                    const mockAIResponse = `التحليل: لم يقم المدافع بالرد في الوقت المحدد ولم يكن لديه خطة افتراضية. يعتبر هذا بمثابة استسلام كامل. خسائر المدافع: مرتفعة جداً (80%). خسائر المهاجم: منخفضة جداً. الخلاصة: الفائز هو [المهاجم]`;
+
+                    // تطبيق النتائج بناءً على الخسارة الافتراضية
+                    await applyWarResults(attackData.attackerUID, currentPlayer.uid, mockAIResponse, attackerDedicatedAssets, {}, true);
+                    database.ref(`notifications/${currentPlayer.uid}/${notificationKey}`).remove();
+                }
+                return; 
+            }
+
+            // [حالة الرد في الوقت المحدد]
+            
             modal.style.display = 'block'; 
             simulationSection.style.display = 'none';
             outputDiv.innerHTML = '';
@@ -668,26 +878,19 @@
             startSimBtn.disabled = false;
             startSimBtn.textContent = 'بدء التحكيم والقتال!';
             
-            const attackerCountry = attackData.attackerCountry;
-            const defenderCountry = currentPlayer.country;
-
-            // عرض تفاصيل الهجوم الوارد
+            const remainingMinutes = Math.ceil((timeLimit - now) / 60000);
+            
             detailsDiv.innerHTML = `
                 <h4 class="font-bold text-lg mb-2 text-danger"><i class="fas fa-bullhorn"></i> هجوم وارد من ${attackerCountry}</h4>
                 <p><strong>خطة الهجوم:</strong> ${attackData.planName}</p>
                 <p><strong>القوة المخصصة للمهاجم:</strong> ${formatNumber(attackData.powerUsed)}</p>
-                <p class="mt-2 text-warning">الآن، حدد خطة الدفاع وخصص الأصول للرد.</p>
+                <p class="mt-2 text-warning">الآن، حدد خطة الدفاع وخصص الأصول للرد. (لديك حوالي **${remainingMinutes}** دقيقة للرد).</p>
             `;
 
-            // جلب بيانات المدافع الحالية (اللاعب الحالي) لتحديث واجهة التحكم بالأصول
-            const defenderData = await fetchGameData(currentPlayer.uid);
-            const defenderStats = calculateUserPower(defenderData);
-            
-            // إعداد خيارات الدفاع وتخصيص الأصول
-            createAssetInputs(defenderData.assets, 'defender', false);
+            // إعداد واجهة الدفاع اليدوي
+            createAssetInputs(currentDefenderData.assets, 'defender', 'defenderAssetsControl', false, {});
             
             defenderPlanSelect.innerHTML = '<option value="">-- اختر خطة دفاع --</option>';
-            // **تم التأكد من صحة هذا الكود الذي يملأ قائمة الخطط**
             for (const key in WAR_PLANS) {
                 if (WAR_PLANS[key].type === 'Defense') {
                     const planName = WAR_PLANS[key].name;
@@ -696,115 +899,34 @@
                 }
             }
             
-            // تخزين بيانات الهجوم المؤقتة لاستخدامها في التحكيم لاحقاً
             content.dataset.notificationKey = notificationKey;
             content.dataset.attackerUID = attackData.attackerUID;
             content.dataset.attackerCountry = attackerCountry;
             content.dataset.attackerPlanName = attackData.planName;
-            content.dataset.attackerDedicatedAssets = JSON.stringify(attackData.dedicatedAssets);
+            content.dataset.attackerDedicatedAssets = JSON.stringify(attackerDedicatedAssets);
+            
+            // لإزالة أي خطة دفاع افتراضية تم تخزينها من سيناريو سابق
+            content.dataset.defenderPlanName = ''; 
 
             startSimBtn.onclick = async () => {
+                const defenderPlanSelect = document.getElementById('defenderPlan');
                 const defenderPlanDesc = defenderPlanSelect.value;
+                const defenderPlanName = defenderPlanSelect.options[defenderPlanSelect.selectedIndex]?.dataset.planName;
                 if (!defenderPlanDesc) return showNotification('الرجاء اختيار خطة دفاع.', 'error');
                 
-                startSimBtn.disabled = true;
-                startSimBtn.textContent = 'جاري التحكيم...';
-
-                // 1. قراءة أصول المدافع المخصصة
-                const defenderInputs = document.querySelectorAll('#defenseModal #defenderAssetsControl input[type="range"]');
-                const defenderDedicatedAssets = {};
-                let defenderTotalPowerUsed = 0;
-                let defenderAssetsListForAI = '';
-                
-                const realDefenderAssets = (await fetchGameData(currentPlayer.uid)).assets || {};
-
-                defenderInputs.forEach(input => {
-                    const name = input.getAttribute('data-asset-name');
-                    const value = parseInt(input.value) || 0;
-                    
-                    const maxCount = realDefenderAssets[name] || 0;
-                    const finalValue = Math.min(value, maxCount);
-                    
-                    if (finalValue > 0) {
-                        defenderDedicatedAssets[name] = finalValue;
-                        defenderAssetsListForAI += `${name.replace(/_/g, ' ')}: ${formatNumber(finalValue)} | `;
-                        defenderTotalPowerUsed += finalValue * (ASSET_DEFINITIONS[name]?.value || ASSET_DEFINITIONS.DEFAULT_MILITARY_POWER);
-                    }
-                });
+                // قراءة أصول المدافع المخصصة يدويًا
+                const { dedicatedAssets: defenderDedicatedAssets, totalPowerUsed: defenderTotalPowerUsed } = getDedicatedAssetsAndPower('defender', 'defenderAssetsControl');
                 
                 if (defenderTotalPowerUsed === 0) {
                     showNotification('يجب تخصيص أصول عسكرية للدفاع.', 'error');
-                    startSimBtn.disabled = false;
-                    startSimBtn.textContent = 'بدء التحكيم والقتال!';
                     return;
                 }
                 
-                // جلب بيانات المهاجم من الإشعار المخزن
-                const attackerDedicatedAssets = JSON.parse(content.dataset.attackerDedicatedAssets);
-                let attackerAssetsListForAI = '';
-                let attackerTotalPowerUsed = 0;
-                const attackerData = allUsersData[attackData.attackerUID] || {};
-                
-                 for(const name in attackerDedicatedAssets) {
-                     const count = attackerDedicatedAssets[name];
-                     attackerAssetsListForAI += `${name.replace(/_/g, ' ')}: ${formatNumber(count)} | `;
-                     attackerTotalPowerUsed += count * (ASSET_DEFINITIONS[name]?.value || ASSET_DEFINITIONS.DEFAULT_MILITARY_POWER);
-                 }
-
-
-                // 2. بناء موجه الذكاء الاصطناعي
-                const fullPrompt = `
-                أنت محلل استراتيجي وخبير عسكري. نفذ محاكاة حرب واقعية قصيرة جداً وموجزة، مع الالتزام بالصيغ المطلوبة أدناه بدقة. يجب أن يتضمن السيناريو وصفاً واضحاً لنتائج الاشتباك الرئيسية، مع التركيز على الخسائر والتضحيات المادية.
-                
-                **تاريخ ووقت المعركة:** ${getCurrentDateTime()}
-
-                **البلد المهاجم (${attackerCountry}):**
-                - القوة الكلية المتاحة: ${formatNumber(attackerData.totalPower || 0)}
-                - القوة الكلية المخصصة للهجوم: ${formatNumber(attackerTotalPowerUsed)}
-                - الأصول المخصصة للهجوم (نوع وعدد): ${attackerAssetsListForAI.trim() || 'لا توجد أصول مخصصة.'}
-                - خطة الهجوم المعتمدة: ${attackData.planName} (الوصف: ${Object.values(WAR_PLANS).find(p => p.name === attackData.planName)?.desc || 'غير متوفر'})
-                - المعنويات: ${Math.floor(attackerData.morale || 75)}%
-
-                **البلد المدافع (${defenderCountry}):**
-                - القوة الكلية المتاحة: ${formatNumber(defenderStats.totalPower)}
-                - القوة الكلية المخصصة للدفاع: ${formatNumber(defenderTotalPowerUsed)}
-                - الأصول المخصصة للدفاع (نوع وعدد): ${defenderAssetsListForAI.trim() || 'لا توجد أصول مخصصة.'}
-                - خطة الدفاع المعتمدة: ${defenderPlanSelect.options[defenderPlanSelect.selectedIndex].text} (الوصف: ${defenderPlanDesc})
-                - المعنويات: ${Math.floor(defenderStats.morale)}%
-                
-                **التحليل المطلوب:** قدم سيناريو موجز وواقعي لتطور المعركة. يجب أن يعتمد التحليل على الأصول المخصصة والخطة المتبعة لكل طرف. يجب أن يشير السيناريو إلى مقدار خسائر الأصول التي تكبدها كل طرف بشكل تقريبي (كنسبة مئوية أو وصف) ليقوم النظام بخصمها لاحقاً.
-                
-                **الخلاصة:** بعد نهاية السيناريو، يجب أن تحدد الفائز بشكل قاطع بذكر اسم الدولة أو بكلمة "المهاجم" أو "المدافع" فقط، باستخدام الصيغة التالية **بالضبط ودون أي إضافات**: 
-                الخلاصة: الفائز هو [اسم الدولة أو المهاجم/المدافع]
-                `;
-
-                outputDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> جاري تحليل بيانات المعركة...</div>';
-                simulationSection.style.display = 'block';
-                document.getElementById('defenderOptions').style.display = 'none';
-                
-                try {
-                    const analysis = await fetchWarSimulation(fullPrompt);
-                    const formattedOutput = analysis
-                        .replace(/\*\*(.*?)\*\*/g, '<span style="color: var(--danger); font-weight: 700;">$1</span>')
-                        .replace(/\n/g, '<br>');
-
-                    outputDiv.innerHTML = formattedOutput;
-                    
-                    // 3. تطبيق النتائج وحذف الإشعار
-                    await applyWarResults(attackData.attackerUID, currentPlayer.uid, analysis, attackerDedicatedAssets, defenderDedicatedAssets);
-                    
-                    // 4. حذف إشعار الهجوم بعد نجاح التطبيق
-                    database.ref(`notifications/${currentPlayer.uid}/${notificationKey}`).remove();
-                    
-                } catch (error) {
-                    outputDiv.innerHTML = `<div style="color: var(--danger); font-weight: 700;">فشل التحكيم: ${error.message}</div>`;
-                    showNotification(`خطأ في AI: ${error.message}`, 'error');
-                } 
+                await runDefenseSimulation(attackData, notificationKey, defenderPlanName, defenderPlanDesc, defenderDedicatedAssets, false);
             };
         }
         
         function startListeningForAttacks(uid) {
-            // ... (نفس منطق startListeningForAttacks السابق)
             const incomingAttacksDiv = document.getElementById('incomingAttacks');
             const noNotificationsP = document.getElementById('noNotifications');
 
@@ -820,17 +942,37 @@
                 
                 noNotificationsP.style.display = 'none';
                 
-                Object.keys(attacks).forEach(key => {
-                    const attackData = attacks[key];
+                const attacksArray = Object.keys(attacks).map(key => ({ ...attacks[key], key })).sort((a, b) => a.timestamp - b.timestamp);
+
+                attacksArray.forEach(attackData => {
+                    const key = attackData.key;
                     const attackItem = document.createElement('div');
+                    
+                    // **تحديث: تحديد حالة الهجوم بناءً على الوقت**
+                    const timeLimit = (attackData.timestamp || Date.now()) + DEFENSE_WINDOW_MS;
+                    const isExpired = Date.now() > timeLimit;
+                    
+                    let statusHtml = '';
+                    let buttonClass = 'btn-danger';
+                    let buttonText = '<i class="fas fa-reply"></i> الرد الدفاعي';
+                    
+                    if (isExpired) {
+                        statusHtml = '<span class="text-danger font-bold mr-2"><i class="fas fa-clock"></i> المهلة انتهت!</span>';
+                        buttonClass = 'bg-gray-500 hover:bg-gray-600';
+                        buttonText = '<i class="fas fa-gavel"></i> مشاهدة الحكم';
+                    } else {
+                        const remainingMinutes = Math.ceil((timeLimit - Date.now()) / 60000);
+                        statusHtml = `<span class="text-warning font-bold mr-2"><i class="fas fa-hourglass-half"></i> متبقي: ${remainingMinutes} دقيقة</span>`;
+                    }
+                    
                     attackItem.className = 'notification-area flex justify-between items-center p-3 bg-red-900/50 rounded-lg mb-2 border-l-4 border-danger';
                     attackItem.innerHTML = `
                         <div>
                             <h3><i class="fas fa-exclamation-circle text-danger"></i> هجوم عسكري وارد من: <span class="text-white font-bold">${attackData.attackerCountry}</span></h3>
-                            <p class="text-xs text-white/70 mt-1">القوة المخصصة: ${formatNumber(attackData.powerUsed)}</p>
+                            <p class="text-xs text-white/70 mt-1">القوة المخصصة: ${formatNumber(attackData.powerUsed)} | ${statusHtml}</p>
                         </div>
-                        <button class="py-1 px-3 btn btn-danger hover:bg-red-700 text-white font-bold rounded-lg transition duration-200" data-key="${key}">
-                            <i class="fas fa-reply"></i> الرد الدفاعي
+                        <button class="py-1 px-3 btn ${buttonClass} text-white font-bold rounded-lg transition duration-200" data-key="${key}">
+                            ${buttonText}
                         </button>
                     `;
                     attackItem.querySelector('button').onclick = () => handleAttackAlert(key, attackData);
@@ -840,7 +982,6 @@
         }
         
         function startListeningForWarHistory() {
-            // ... (نفس منطق startListeningForWarHistory السابق)
             const warHistoryList = document.getElementById('warHistoryList');
             const noWarHistoryP = document.getElementById('noWarHistory');
 
@@ -856,7 +997,7 @@
                 
                 noWarHistoryP.style.display = 'none';
                 
-                const sortedHistory = Object.values(history).sort((a, b) => b.timestamp - a.timestamp);
+                const sortedHistory = Object.keys(history).map(key => ({ ...history[key], key })).sort((a, b) => b.timestamp - a.timestamp);
 
                 sortedHistory.forEach(item => {
                     let statusClass = 'draw';
@@ -872,23 +1013,45 @@
                         winnerInfo += `<br>خسائر ${item.winnerCountry}: <span class="text-warning">${formatNumber(winnerLoss)}</span>$ | خسائر ${loserCountry}: <span class="loss">${formatNumber(loserLoss)}</span>$`;
                     }
                     
+                    const lootInfo = (item.lootAmount && item.lootAmount > 0) ? `<span class="text-success mr-2">غنائم مالية: ${formatNumber(item.lootAmount)}$</span>` : `<span class="text-white/70">لم يتم أخذ غنائم مالية (حماية فقر).</span>`;
+                    
+                    // **إضافة حالة الدفاع الافتراضي**
+                    const defenseType = item.isDefaultDefenseUsed ? '<span class="text-danger font-bold">(دفاع افتراضي)</span>' : '';
+                    
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'war-history-item hover:bg-gray-700/50 transition duration-150';
                     itemDiv.innerHTML = `
                         <p class="text-base font-bold text-primary mb-1">
                             <i class="fas fa-handshake-slash"></i> ${item.attackerCountry} (خطة: ${item.attackerPlan}) 
                             <span class="text-white mx-2">ضد</span> 
-                            ${item.defenderCountry} (خطة: ${item.defenderPlan})
+                            ${item.defenderCountry} (خطة: ${item.defenderPlan}) ${defenseType}
                         </p>
-                        <p class="text-sm">${winnerInfo}</p>
+                        <p class="text-sm">${winnerInfo} | ${lootInfo}</p>
                         <p class="text-xs text-white/50 mt-1">${new Date(item.timestamp).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                        
+                        <button class="toggle-scenario-btn text-xs text-primary mt-2 p-1 rounded hover:bg-primary/20 transition duration-150" data-target="scenario-${item.key}">
+                            <i class="fas fa-file-alt"></i> إظهار/إخفاء سيناريو المعركة 
+                        </button>
+                        <div id="scenario-${item.key}" class="scenario-content mt-2 p-3 bg-gray-900 border border-gray-700 rounded-lg text-xs" style="display:none;">
+                            <p class="font-bold text-warning mb-2">تقرير التحليل الاستراتيجي (AI):</p>
+                            ${(item.scenario || 'لا يتوفر تقرير مفصل لهذه المعركة.').replace(/\n/g, '<br>')}
+                        </div>
                     `;
                     warHistoryList.appendChild(itemDiv);
                 });
+
+                // إضافة مستمعي الأحداث لأزرار تبديل السيناريو
+                warHistoryList.querySelectorAll('.toggle-scenario-btn').forEach(button => {
+                    button.onclick = (e) => {
+                        const targetId = e.target.getAttribute('data-target');
+                        const targetDiv = document.getElementById(targetId);
+                        targetDiv.style.display = targetDiv.style.display === 'none' ? 'block' : 'none';
+                    };
+                });
+                
                 document.getElementById('warHistorySection').style.display = 'block';
             });
         }
-
 
         // **********************************************
         // منطق التهدئة (Cooldown) والتحقق من الهجوم
@@ -902,22 +1065,21 @@
             const cooldownMsg = document.getElementById('attackCooldownMsg');
             
             if (remainingTime > 0) {
-                const minutes = Math.ceil(remainingTime / 60000); // دقائق متبقية
+                const minutes = Math.ceil(remainingTime / 60000); 
                 cooldownMsg.textContent = `يجب انتظار ${minutes} دقيقة لشن هجوم آخر (تهدئة).`;
                 cooldownMsg.style.display = 'block';
                 confirmBtn.disabled = true;
                 startBtn.disabled = true;
                 document.getElementById('startAttackBtn').style.display = 'none'; 
-                return true; // في فترة التهدئة
+                return true; 
             } else {
                 cooldownMsg.style.display = 'none';
-                confirmBtn.disabled = false; // يتيح زر التأكيد
-                return false; // لا توجد فترة تهدئة
+                confirmBtn.disabled = false; 
+                return false; 
             }
         }
         
         async function authenticatePlayer(uid) {
-            // ... (نفس منطق authenticatePlayer السابق)
             if (!uid) {
                 document.getElementById('authMessage').textContent = 'غير مسجل الدخول. الرجاء تسجيل الدخول في صفحة Home.';
                 return;
@@ -946,12 +1108,13 @@
             document.getElementById('playerDataSection').style.display = 'grid';
             document.getElementById('attackSection').style.display = 'block';
             document.getElementById('notificationsSection').style.display = 'block';
+            document.getElementById('defaultDefenseSection').style.display = 'block';
 
-            populateAttackerOptions(stats);
+            populateAttackerAndDefaultDefenseOptions(stats);
             await updateDefenderSelect(uid);
             
             startListeningForAttacks(uid); 
-            startListeningForWarHistory(); // بدء الاستماع لسجل الحروب
+            startListeningForWarHistory(); 
             checkAttackCooldown(stats.lastAttackTime);
             
             showNotification(`مرحباً بالرئيس ${currentPlayer.headName} لدولة ${currentPlayer.country}.`, 'success');
@@ -967,38 +1130,59 @@
                 }
             });
             
-            // مستمع تغيير الخطة لاخفاء زر الارسال وعرض زر التاكيد
+            // **منطق حفظ الدفاع الافتراضي**
+            document.getElementById('saveDefaultDefenseBtn').addEventListener('click', async () => {
+                if (!currentPlayer) return showNotification('يجب تسجيل الدخول أولاً.', 'error');
+
+                const defaultPlanSelect = document.getElementById('defaultDefenderPlan');
+                const defaultPlanName = defaultPlanSelect.options[defaultPlanSelect.selectedIndex]?.dataset.planName;
+
+                if (!defaultPlanName) return showNotification('الرجاء اختيار خطة دفاع افتراضية.', 'error');
+
+                const { dedicatedAssets: defaultDedicatedAssets, totalPowerUsed: defaultTotalPowerUsed } = getDedicatedAssetsAndPower('defaultDefender', 'defaultDefenderAssetsControl');
+                
+                if (defaultTotalPowerUsed === 0) {
+                    return showNotification('يجب تخصيص أصول عسكرية للدفاع الافتراضي.', 'error');
+                }
+                
+                try {
+                    await database.ref(`users/${currentPlayer.uid}/defaultDefense`).set({
+                        planName: defaultPlanName,
+                        dedicatedAssets: defaultDedicatedAssets
+                    });
+                    
+                    document.getElementById('defaultDefensePlanName').textContent = defaultPlanName;
+                    showNotification('تم حفظ الخطة الدفاعية الافتراضية بنجاح.', 'success');
+                    
+                    // إعادة تحميل جزئية لضمان تحديث الأصول المتاحة إذا تم استخدام جزء منها
+                    const rtdbData = await fetchGameData(currentPlayer.uid);
+                    const stats = calculateUserPower(rtdbData);
+                    populateAttackerAndDefaultDefenseOptions(stats);
+
+                } catch (error) {
+                    showNotification(`فشل في حفظ خطة الدفاع الافتراضية: ${error.message}.`, 'error');
+                }
+            });
+            
+            
             document.getElementById('attackerPlan').addEventListener('change', () => {
                  document.getElementById('confirmAttackBtn').disabled = false;
                  document.getElementById('startAttackBtn').style.display = 'none';
             });
             
-            // زر موافقة الجنرال/القيادة
             document.getElementById('confirmAttackBtn').addEventListener('click', async () => {
                 if (!currentPlayer || checkAttackCooldown(allUsersData[currentPlayer.uid]?.lastAttackTime || 0)) return; 
                 
                 const defenderUID = document.getElementById('defenderSelect').value;
                 const attackerPlanSelect = document.getElementById('attackerPlan');
+                const targetPower = allUsersData[defenderUID]?.totalPower || 0;
                 
                 if (!defenderUID) return showNotification('الرجاء اختيار دولة مستهدفة أولاً.', 'error');
+                if (targetPower < MIN_POWER_TO_ATTACK) return showNotification(`لا يمكن مهاجمة هذه الدولة، قوتها العسكرية أقل من ${formatNumber(MIN_POWER_TO_ATTACK)}.`, 'error');
+
                 if (!attackerPlanSelect.value) return showNotification('الرجاء اختيار خطة هجوم أولاً.', 'error');
 
-                const attackerInputs = document.querySelectorAll('#attackerAssetsControl input[type="range"]');
-                let attackerTotalPowerUsed = 0;
-                
-                const realAttackerAssets = (await fetchGameData(currentPlayer.uid)).assets || {};
-
-                attackerInputs.forEach(input => {
-                    const name = input.getAttribute('data-asset-name');
-                    const requestedValue = parseInt(input.value) || 0;
-                    
-                    const maxCount = realAttackerAssets[name] || 0;
-                    const finalValue = Math.min(requestedValue, maxCount);
-                    
-                    if (finalValue > 0) {
-                        attackerTotalPowerUsed += finalValue * (ASSET_DEFINITIONS[name]?.value || ASSET_DEFINITIONS.DEFAULT_MILITARY_POWER);
-                    }
-                });
+                const { totalPowerUsed: attackerTotalPowerUsed } = getDedicatedAssetsAndPower('attacker', 'attackerAssetsControl');
                 
                 if (attackerTotalPowerUsed === 0) {
                     return showNotification('يجب تخصيص أصول عسكرية للهجوم.', 'error');
@@ -1024,24 +1208,7 @@
                 startBtn.disabled = true;
                 startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري إرسال الهجوم...';
 
-                const attackerInputs = document.querySelectorAll('#attackerAssetsControl input[type="range"]');
-                const attackerDedicatedAssets = {};
-                let attackerTotalPowerUsed = 0;
-
-                const realAttackerAssets = (await fetchGameData(currentPlayer.uid)).assets || {};
-
-                attackerInputs.forEach(input => {
-                    const name = input.getAttribute('data-asset-name');
-                    const requestedValue = parseInt(input.value) || 0;
-
-                    const maxCount = realAttackerAssets[name] || 0;
-                    const finalValue = Math.min(requestedValue, maxCount);
-
-                    if (finalValue > 0) {
-                        attackerDedicatedAssets[name] = finalValue;
-                        attackerTotalPowerUsed += finalValue * (ASSET_DEFINITIONS[name]?.value || ASSET_DEFINITIONS.DEFAULT_MILITARY_POWER);
-                    }
-                });
+                const { dedicatedAssets: attackerDedicatedAssets, totalPowerUsed: attackerTotalPowerUsed } = getDedicatedAssetsAndPower('attacker', 'attackerAssetsControl');
                 
                 if (attackerTotalPowerUsed === 0) {
                     showNotification('خطأ أمني: لم يتم تخصيص أصول صالحة بعد التحقق.', 'error');
@@ -1069,13 +1236,13 @@
                         lastAttackTime: firebase.database.ServerValue.TIMESTAMP
                     });
                     
-                    showNotification(`تم إرسال الهجوم بنجاح على دولة ${defenderCountry}!`, 'success');
+                    showNotification(`تم إرسال الهجوم بنجاح على دولة ${defenderCountry}! لديهم 30 دقيقة للرد.`, 'success');
                     
                     document.getElementById('startAttackBtn').style.display = 'none';
                     authenticatePlayer(currentPlayer.uid); 
                     
                 } catch (error) {
-                    showNotification(`فشل في إرسال الهجوم: ${error.message}. (قد يكون بسبب قواعد الأمان).`, 'error');
+                    showNotification(`فشل في إرسال الهجوم: ${error.message}.`, 'error');
                 } finally {
                     document.getElementById('confirmAttackBtn').disabled = true;
                     startBtn.innerHTML = '<i class="fas fa-bomb"></i> إرسال الهجوم الآن!';
