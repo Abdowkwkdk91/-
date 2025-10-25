@@ -295,15 +295,24 @@
         };
         
         const ASSET_DEFINITIONS = {
-            'كتيبة_المشاة': { value: 4000, type: 'Military' }, 'كتيبة_القناصة': { value: 5500, type: 'Military' },
-            'كتيبة_الهجومية_الجوية': { value: 12000, type: 'Military' }, 'كتيبة_المدرعات': { value: 14000, type: 'Military' },
-            'طائرة_مقاتلة': { value: 35000, type: 'Military' }, 'طائرة_قاذفة': { value: 60000, type: 'Military' }, 
-            'T-90': { value: 15000, type: 'Military' }, 'Abrams': { value: 19000, type: 'Military' }, 
-            'Bayraktar_TB2': { value: 20000, type: 'Military' }, 
-            'T-72': { value: 12000, type: 'Military' }, 
-            'Kalibr_3M-14': { value: 40000, type: 'Military' },
-            'منجم_الذهب': { value: 0, type: 'Economic' }, 
-            'منجم_الماس': { value: 0, type: 'Economic' },
+            // الأصول العسكرية (سيتم تصنيفها آليًا كسلاح لعدم احتوائها على كلمات مفتاحية اقتصادية)
+            'كتيبة_المشاة': { value: 4000 }, 
+            'كتيبة_القناصة': { value: 5500 },
+            'كتيبة_الهجومية_الجوية': { value: 12000 }, 
+            'كتيبة_المدرعات': { value: 14000 },
+            'طائرة_مقاتلة': { value: 35000 }, 
+            'طائرة_قاذفة': { value: 60000 }, 
+            'T-90': { value: 15000 }, 
+            'Abrams': { value: 19000 }, 
+            'Bayraktar_TB2': { value: 20000 }, 
+            'T-72': { value: 12000 }, 
+            'Kalibr_3M-14': { value: 40000 },
+            
+            // الأصول الاقتصادية (يجب أن تبدأ بكلمات مفتاحية: شركة، مزرعة، حقل، منجم)
+            'منجم_الذهب': { value: 0 }, 
+            'منجم_الماس': { value: 0 },
+            // يمكن إضافة: 'شركة_نفط'، 'مزرعة_قطن'، 'حقل_قمح'
+            
             DEFAULT_MILITARY_POWER: 5000, 
             DEFAULT_ECONOMIC_POWER: 0
         };
@@ -379,6 +388,22 @@
             }
         }
         
+        // ** دالة التصنيف الجديدة: أي شيء لا يبدأ بـ (شركة، مزرعة، حقل، منجم) هو سلاح **
+        function classifyAsset(assetName) {
+            const economicKeywords = ['شركة', 'مزرعة', 'حقل', 'منجم'];
+            // تحويل اسم الأصل إلى صيغة للتحقق (استبدال الفراغات بـ _)
+            const normalizedName = assetName.replace(/ /g, '_'); 
+
+            for (const keyword of economicKeywords) {
+                // التحقق مما إذا كان الاسم يبدأ بالكلمة المفتاحية متبوعة بشرطة سفلية (مثل: منجم_الذهب)
+                if (normalizedName.startsWith(keyword + '_') || normalizedName === keyword) {
+                    return 'Economic';
+                }
+            }
+            // كل ما عدا ذلك يُصنّف كسلاح/عسكري
+            return 'Military';
+        }
+
         function calculateUserPower(gameData) {
             let totalPower = 0;
             const allAssets = gameData.assets || {};
@@ -390,15 +415,19 @@
                 const count = allAssets[assetName];
                 const definition = ASSET_DEFINITIONS[assetName] || {};
                 const assetValue = definition.value !== undefined ? definition.value : ASSET_DEFINITIONS.DEFAULT_MILITARY_POWER;
-                const isMilitary = definition.type === 'Military';
+                
+                // استخدام دالة التصنيف الجديدة
+                const assetType = classifyAsset(assetName);
+                const isMilitary = assetType === 'Military';
 
                 if (isMilitary && count > 0) {
+                    // القوة تحسب فقط للأصول العسكرية (بما في ذلك أي أصول غير مصنفة آلياً)
                     militaryAssetsDetails[assetName] = count; 
                     totalPower += assetValue * count;
                 }
                 
                 const icon = isMilitary ? '<i class="fas fa-hammer text-danger"></i>' : '<i class="fas fa-coins text-success"></i>';
-                const type = isMilitary ? '(عسكري)' : '(اقتصادي)';
+                const type = isMilitary ? '(سلاح/عسكري)' : '(اقتصادي)';
                 assetsListHTML += `<div class="p-1 text-xs border-b border-gray-600/50">${icon} ${assetName.replace(/_/g, ' ')} ${type}: <span class="text-white">${formatNumber(count)}</span></div>`;
             }
             
@@ -464,7 +493,8 @@
             const controlDiv = document.getElementById(targetContainerId);
             controlDiv.innerHTML = `<h3><i class="fas fa-wrench"></i> ${playerId === 'attacker' ? 'تخصيص الأصول للهجوم' : (isDefaultDefense ? 'تخصيص الأصول للدفاع الافتراضي' : 'تخصيص الأصول للدفاع')}</h3>`; 
 
-            const militaryAssets = Object.keys(assets).filter(name => ASSET_DEFINITIONS[name]?.type === 'Military' && assets[name] > 0);
+            // تصفية الأصول العسكرية فقط للتخصيص
+            const militaryAssets = Object.keys(assets).filter(name => classifyAsset(name) === 'Military' && assets[name] > 0);
 
             if (militaryAssets.length === 0) {
                 controlDiv.innerHTML += `<p style="color: var(--text-secondary); font-size: 0.9rem;">لا توجد أصول عسكرية متاحة للتخصيص.</p>`;
